@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to the Kingdom</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1d1f27, #2b2e3a);
+            color: white;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .welcome {
+            position: relative;
+            top: -100px;
+            margin-bottom: 40px;
+            font-size: 4rem;
+            color: rgba(255, 215, 0, 1);
+        }
+
+        .content {
+            max-width: 800px;
+            padding: 20px;
+            background: #1a1c22;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 215, 0, 0.8);
+        }
+
+        h2 {
+            color: rgba(255, 215, 0, 1);
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #c5c5c5;
+            line-height: 1.6;
+        }
+
+        .button {
+            margin-top: 20px;
+        }
+
+        .button a {
+            text-decoration: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            background: linear-gradient(135deg, #ffd700, #d4af37);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .button a:hover {
+            transform: scale(1.05);
+            background: linear-gradient(135deg, #d4af37, #ffd700);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="welcome">Welcome to the Kingdom</div>
+        <div class="content">
+            <h2>About the King Token</h2>
+            <p>The King Token is your gateway to the kingdom. Each month, holders of King Token have the power to vote for their favorite candidate to be crowned "King of the Month." The crowned King will receive the entire 5% buy tax collected from all transactions during the month, making it a highly sought-after title!</p>
+            <p>Register on our website with your name and wallet address to participate in the voting and stand a chance to become the King of the Month. Each vote costs a certain amount of King Tokens, so use your tokens wisely and make your voice heard in the kingdom!</p>
+            <div class="button">
+                <a href="#register">Register Now</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
