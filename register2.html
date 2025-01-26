@@ -116,69 +116,68 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tronweb/dist/TronWeb.min.js"></script>
   <script>
+    let tronWeb, userAddress;
+    const contractAddress = "TEVqawrKSTPPzaEjzETASmBHEUtpnSmtbj";
+    const contractAbi = [
+        {
+            "inputs": [
+                { "internalType": "string", "name": "name", "type": "string" }
+            ],
+            "name": "registerAndVote",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }
+    ];
     
-        let tronWeb, userAddress;
-        const contractAddress = "TEVqawrKSTPPzaEjzETASmBHEUtpnSmtbj";
-        const contractAbi = [
-            {
-                "inputs": [
-                    { "internalType": "string", "name": "name", "type": "string" }
-                ],
-                "name": "registerAndVote",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            }
-        ];
-    
-   document.addEventListener('DOMContentLoaded', async () => {
-    document.getElementById('connect-button').addEventListener('click', connectWallet);
+    document.addEventListener('DOMContentLoaded', async () => {
+        document.getElementById('connectWallet').addEventListener('click', connectWallet);
 
-    if (await checkTronLinkInstalled()) {
-        await initializeTronWeb();
-        setInterval(updateAllUI, 60000); // Update UI every minute
-    } else {
-        console.error('TronLink is not installed.');
-    }
-});
-
-// Check if TronLink is installed
-async function checkTronLinkInstalled() {
-    return new Promise((resolve) => {
-        const interval = setInterval(() => {
-            if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
-                clearInterval(interval);
-                resolve(true);
-            }
-        }, 1000);
+        if (await checkTronLinkInstalled()) {
+            await initializeTronWeb();
+        } else {
+            console.error('TronLink is not installed.');
+        }
     });
-}
 
-// Connect the wallet using TronLink
-async function connectWallet() {
-    try {
-        await tronLink.request({ method: 'tron_requestAccounts' });
-        await initializeTronWeb();
-    } catch (e) {
-        console.error('Failed to connect to TronLink:', e);
+    // Check if TronLink is installed
+    async function checkTronLinkInstalled() {
+        return new Promise((resolve) => {
+            const interval = setInterval(() => {
+                if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
+                    clearInterval(interval);
+                    resolve(true);
+                }
+            }, 1000);
+        });
     }
-}
 
-// Initialize TronWeb and the contracts
-async function initializeTronWeb() {
-    try {
-        tronWeb = window.tronWeb;
-        userAddress = tronWeb.defaultAddress.base58;
+    // Connect the wallet using TronLink
+    async function connectWallet() {
+        try {
+            await tronLink.request({ method: 'tron_requestAccounts' });
+            await initializeTronWeb();
+        } catch (e) {
+            console.error('Failed to connect to TronLink:', e);
+        }
+    }
 
-        console.log('Connected to TronLink.');
-        console.log('User Address:', userAddress);
+    // Initialize TronWeb and the contracts
+    async function initializeTronWeb() {
+        try {
+            tronWeb = window.tronWeb;
+            userAddress = tronWeb.defaultAddress.base58;
 
-        document.getElementById('connect-button').style.display = 'none';
-      }
-}
-      
+            console.log('Connected to TronLink.');
+            console.log('User Address:', userAddress);
 
-       
+            document.getElementById('wallet').value = userAddress;
+            document.getElementById('message').textContent = "Wallet connected successfully.";
+        } catch (error) {
+            console.error("TronWeb initialization failed", error);
+        }
+    }
   </script>
 </body>
 </html>
+
