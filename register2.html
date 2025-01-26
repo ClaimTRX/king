@@ -120,16 +120,22 @@
     let tronWeb, userAddress;
     const contractAddress = "TJeGm1Rh2wcNUBKqbXfD6HYLgsbcLC1Uj4";
     const contractAbi = [
-        {
-            "inputs": [
-                { "internalType": "string", "name": "name", "type": "string" }
-            ],
-            "name": "registerAndVote",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }
-    ];
+        [
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "name",
+                "type": "string"
+            }
+        ],
+        "name": "register",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]
+
     
     document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('connectWallet').addEventListener('click', connectWallet);
