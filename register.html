@@ -111,7 +111,7 @@
     </div>
 
     <script>
-        let tronWeb;
+        let tronWeb, userAddress;
         const contractAddress = "TEVqawrKSTPPzaEjzETASmBHEUtpnSmtbj";
         const contractAbi = [
             {
@@ -125,42 +125,55 @@
             }
         ];
 
-        $(document).ready(async function() {
-            $('#connectWallet').on('click', async function() {
-                if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
-                    tronWeb = window.tronWeb;
-                    const userAddress = tronWeb.defaultAddress.base58;
-                    $('#wallet').val(userAddress);
-                    $('#message').text("Wallet connected successfully.");
-                } else {
-                    $('#message').text("Please install TronLink wallet and refresh the page.");
-                }
-            });
+        async function initializeTronWeb() {
+            try {
+                tronWeb = window.tronWeb;
+                userAddress = tronWeb.defaultAddress.base58;
 
-            $('#voteForm').on('submit', async function(e) {
-                e.preventDefault();
-                const name = $('#name').val();
-                const wallet = $('#wallet').val();
+                $('#wallet').val(userAddress);
+                $('#message').text("Wallet connected successfully.");
 
-                if (!tronWeb) {
-                    $('#message').text("Please connect your wallet first.");
-                    return;
-                }
+                console.log("TronWeb initialized");
+            } catch (error) {
+                console.error("TronWeb initialization failed", error);
+            }
+        }
 
-                try {
-                    const contract = await tronWeb.contract(contractAbi, contractAddress);
-                    await contract.registerAndVote(name).send({
-                        feeLimit: 100_000_000,
-                        callValue: 0,
-                        shouldPollResponse: true,
-                    });
+        async function connectWallet() {
+            if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
+                initializeTronWeb();
+            } else {
+                $('#message').text("Please install TronLink and refresh the page.");
+            }
+        }
 
-                    $('#message').text(`Thank you, ${name}! Your vote has been registered.`);
-                } catch (error) {
-                    $('#message').text(`Error: ${error.message}`);
-                }
-            });
+        $('#connectWallet').click(async function () {
+            await connectWallet();
+        });
+
+        $('#voteForm').submit(async function (e) {
+            e.preventDefault();
+
+            const name = $('#name').val();
+            if (!tronWeb || !userAddress) {
+                $('#message').text("Please connect your wallet first.");
+                return;
+            }
+
+            try {
+                const contract = await tronWeb.contract(contractAbi, contractAddress);
+                await contract.registerAndVote(name).send({
+                    feeLimit: 100000000,
+                    callValue: 0,
+                    shouldPollResponse: true,
+                });
+                $('#message').text(`Thank you, ${name}! Your vote has been registered.`);
+            } catch (error) {
+                console.error("Error submitting vote", error);
+                $('#message').text(`Error: ${error.message}`);
+            }
         });
     </script>
 </body>
 </html>
+
