@@ -177,31 +177,32 @@
             console.error("TronWeb initialization failed", error);
         }
     }
-    // Submit the vote
     document.getElementById('voteForm').addEventListener('submit', async function (e) {
-        e.preventDefault();
+    e.preventDefault();
 
-        const name = document.getElementById('name').value;
-        if (!tronWeb || !userAddress) {
-            document.getElementById('message').textContent = "Please connect your wallet first.";
-            return;
-        }
+    const name = document.getElementById('name').value;
+    if (!tronWeb || !userAddress) {
+        document.getElementById('message').textContent = "Please connect your wallet first.";
+        return;
+    }
 
-        try {
-            const contract = await tronWeb.contract(contractAbi, contractAddress);
-            const transaction = await contract.registerAndVote(name).send({
-                feeLimit: 100_000_000,
-                callValue: 0,
-                shouldPollResponse: true,
-            });
+    try {
+        // Interact with the contract
+        const contract = await tronWeb.contract(contractAbi, contractAddress);
 
-            console.log("Transaction successful:", transaction);
-            document.getElementById('message').textContent = `Thank you, ${name}! Your vote has been registered.`;
-        } catch (error) {
-            console.error("Error submitting vote", error);
-            document.getElementById('message').textContent = `Error: ${error.message}`;
-        }
-    });
+        // Send the transaction
+        const transaction = await contract.registerAndVote(name).send({
+            shouldPollResponse: true, // Wait for transaction confirmation
+        });
+
+        console.log("Transaction successful:", transaction);
+        document.getElementById('message').textContent = `Thank you, ${name}! Your vote has been registered.`;
+    } catch (error) {
+        console.error("Error submitting vote", error);
+        document.getElementById('message').textContent = `Error: ${error.message}`;
+    }
+});
+
   </script>
 </body>
 </html>
