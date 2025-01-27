@@ -227,6 +227,7 @@
         const candidateSelect = document.getElementById('candidate');
         candidateSelect.innerHTML = ''; // Clear existing options
 
+        // Add candidates to the dropdown
         for (let i = 0; i < addresses.length; i++) {
             const option = document.createElement('option');
             option.value = addresses[i];
@@ -249,18 +250,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-    document.getElementById('voteForm').addEventListener('submit', async function (e) {
+  document.getElementById('voteForm').addEventListener('submit', async function (e) {
     e.preventDefault();
 
-    const candidateAddress = document.getElementById('candidate').value;
+    const candidate = document.getElementById('candidate').value; // Candidate address
     if (!tronWeb || !userAddress) {
         document.getElementById('message').textContent = "Please connect your wallet first.";
         return;
     }
 
     try {
+        // Load the contract using the ABI and deployed contract address
         const contract = await tronWeb.contract(contractAbi, contractAddress);
-        const transaction = await contract.vote(candidateAddress).send({
+
+        // Call the vote function
+        const transaction = await contract.vote(candidate).send({
             shouldPollResponse: true,
         });
 
@@ -271,7 +275,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('message').textContent = `Error: ${error.message}`;
     }
 });
-
+  
 
 
   </script>
