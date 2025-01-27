@@ -928,21 +928,32 @@
         }
     }
 
-    async function loadCandidates() {
+   async function loadCandidates() {
     try {
+        // Ensure TronWeb is initialized
+        if (!tronWeb) throw new Error("TronWeb is not initialized. Connect your wallet.");
+
+        // Load the contract
         const contract = await tronWeb.contract(contractAbi, contractAddress);
+
+        // Fetch voter list from the contract
         const [addresses, names] = await contract.getVoterList().call();
 
-        console.log("Fetched Addresses:", addresses);
-        console.log("Fetched Names:", names);
+        console.log("Addresses fetched from contract:", addresses);
+        console.log("Names fetched from contract:", names);
 
+        // Reference the dropdown element
         const candidateSelect = document.getElementById('candidate');
         candidateSelect.innerHTML = ''; // Clear existing options
 
-        if (addresses.length === 0 || names.length === 0) {
-            throw new Error("No candidates found. Ensure candidates are registered.");
+        // Ensure the response is valid
+        if (!addresses || !names || addresses.length === 0 || names.length === 0) {
+            document.getElementById('message').textContent = "No candidates found. Ensure registration is complete.";
+            console.error("No candidates found in the contract.");
+            return;
         }
 
+        // Populate the dropdown with candidates
         for (let i = 0; i < addresses.length; i++) {
             const base58Address = tronWeb.address.fromHex(addresses[i]); // Convert Hex to Base58
             const option = document.createElement('option');
@@ -950,6 +961,7 @@
             option.textContent = `${names[i]} (${base58Address})`;
             candidateSelect.appendChild(option);
         }
+
         document.getElementById('message').textContent = "Candidates loaded successfully.";
     } catch (error) {
         console.error("Error loading candidates:", error);
