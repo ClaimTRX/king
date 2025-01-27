@@ -49,7 +49,7 @@
             font-size: 1rem;
         }
 
-        input {
+        input, select {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -86,10 +86,10 @@
             font-size: 0.9rem;
             color: #c5c5c5;
         }
-    </style>
+  </style>
 </head>
 <body>
-    <div class="container">
+  <div class="container">
     <div class="form-container">
         <h2>Vote</h2>
         <form id="voteForm">
@@ -106,22 +106,26 @@
             <input type="text" id="wallet" name="wallet" placeholder="Wallet address will appear here" readonly required>
 
             <div class="button">
+                <button type="button" id="approveButton">Approve Tokens</button>
+            </div>
+
+            <div class="button">
                 <button type="submit">Vote</button>
             </div>
         </form>
         <div class="message" id="message"></div>
     </div>
-</div>
-
-
-
+  </div>
 
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tronweb/dist/TronWeb.min.js"></script>
   <script>
     let tronWeb, userAddress;
     const contractAddress = "TJeGm1Rh2wcNUBKqbXfD6HYLgsbcLC1Uj4";
+    const kingTokenAddress = "TTogsjMPyNCmzdoPy5y7VihG51wcmqVC8p";
+    const voteCost = 10; // Set this to the cost in King Tokens (adjust as needed)
+    const maxUint256 = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+
     const contractAbi = [
     {
         "inputs": [
@@ -129,10 +133,187 @@
                 "internalType": "string",
                 "name": "name",
                 "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "symbol",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "totalSupply",
+                "type": "uint256"
             }
         ],
-        "name": "register",
-        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "owner",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "spender",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "value",
+                "type": "uint256"
+            }
+        ],
+        "name": "Approval",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "previousOwner",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "newOwner",
+                "type": "address"
+            }
+        ],
+        "name": "OwnershipTransferred",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "from",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "to",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "value",
+                "type": "uint256"
+            }
+        ],
+        "name": "Transfer",
+        "type": "event"
+    },
+    {
+        "inputs": [],
+        "name": "MODE_NORMAL",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "MODE_TRANSFER_CONTROLLED",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "MODE_TRANSFER_RESTRICTED",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "_mode",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "owner",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "spender",
+                "type": "address"
+            }
+        ],
+        "name": "allowance",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "spender",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "approve",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
         "stateMutability": "nonpayable",
         "type": "function"
     },
@@ -140,13 +321,341 @@
         "inputs": [
             {
                 "internalType": "address",
-                "name": "candidate",
+                "name": "account",
                 "type": "address"
             }
         ],
-        "name": "vote",
+        "name": "balanceOf",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "decimals",
+        "outputs": [
+            {
+                "internalType": "uint8",
+                "name": "",
+                "type": "uint8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "spender",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "subtractedValue",
+                "type": "uint256"
+            }
+        ],
+        "name": "decreaseAllowance",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "spender",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "addedValue",
+                "type": "uint256"
+            }
+        ],
+        "name": "increaseAllowance",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "name",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "owner",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "renounceOwnership",
         "outputs": [],
         "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "v",
+                "type": "uint256"
+            }
+        ],
+        "name": "setMode",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "symbol",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "totalSupply",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "to",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "transfer",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "from",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "to",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "transferFrom",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "newOwner",
+                "type": "address"
+            }
+        ],
+        "name": "transferOwnership",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+];
+    const kingTokenAbi = [
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_kingToken",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_registerCost",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_voteCost",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_initialDuration",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "voter",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "name",
+                "type": "string"
+            }
+        ],
+        "name": "Registered",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "voter",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "candidate",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "totalVotes",
+                "type": "uint256"
+            }
+        ],
+        "name": "Voted",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "newRegisterCost",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "newVoteCost",
+                "type": "uint256"
+            }
+        ],
+        "name": "CostsUpdated",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "newEndTime",
+                "type": "uint256"
+            }
+        ],
+        "name": "TimerUpdated",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [],
+        "name": "VotesReset",
+        "type": "event"
+    },
+    {
+        "inputs": [],
+        "name": "endTime",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -166,24 +675,53 @@
         ],
         "stateMutability": "view",
         "type": "function"
-    }
-]
+    },
+    {
+        "inputs": [],
+        "name": "owner",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "voterAddress",
+                "type": "address"
+            }
+        ],
+        "name": "getVoterDetails",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "string",
+                        "name": "name",
+                        "
 
 
-    
     document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('connectWallet').addEventListener('click', connectWallet);
+        document.getElementById('approveButton').addEventListener('click', approveTokens);
+        document.getElementById('voteForm').addEventListener('submit', submitVote);
 
         if (await checkTronLinkInstalled()) {
             await initializeTronWeb();
+            await loadCandidates();
         } else {
             console.error('TronLink is not installed.');
         }
     });
 
-    // Check if TronLink is installed
     async function checkTronLinkInstalled() {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
             const interval = setInterval(() => {
                 if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
                     clearInterval(interval);
@@ -193,93 +731,89 @@
         });
     }
 
-    // Connect the wallet using TronLink
     async function connectWallet() {
         try {
             await tronLink.request({ method: 'tron_requestAccounts' });
             await initializeTronWeb();
-        } catch (e) {
-            console.error('Failed to connect to TronLink:', e);
-        }
-    }
-
-    // Initialize TronWeb and the contracts
-    async function initializeTronWeb() {
-        try {
-            tronWeb = window.tronWeb;
-            userAddress = tronWeb.defaultAddress.base58;
-
-            console.log('Connected to TronLink.');
-            console.log('User Address:', userAddress);
-
-            document.getElementById('wallet').value = userAddress;
-            document.getElementById('message').textContent = "Wallet connected successfully.";
         } catch (error) {
-            console.error("TronWeb initialization failed", error);
+            console.error('Failed to connect to TronLink:', error);
         }
     }
-    
-   async function loadCandidates() {
-    try {
-        const contract = await tronWeb.contract(contractAbi, contractAddress);
-        const [addresses, names] = await contract.getVoterList().call();
 
-        const candidateSelect = document.getElementById('candidate');
-        candidateSelect.innerHTML = ''; // Clear existing options
+    async function initializeTronWeb() {
+        tronWeb = window.tronWeb;
+        userAddress = tronWeb.defaultAddress.base58;
 
-        // Add candidates to the dropdown
-        for (let i = 0; i < addresses.length; i++) {
-            const base58Address = tronWeb.address.fromHex(addresses[i]); // Convert to base58 format
-            const option = document.createElement('option');
-            option.value = addresses[i]; // Use the hex address as the value for voting
-            option.textContent = `${names[i]} (${base58Address})`; // Display base58 format
-            candidateSelect.appendChild(option);
+        console.log('Connected to TronLink.');
+        document.getElementById('wallet').value = userAddress;
+        document.getElementById('message').textContent = "Wallet connected successfully.";
+    }
+
+    async function approveTokens() {
+        try {
+            const kingTokenContract = await tronWeb.contract(kingTokenAbi, kingTokenAddress);
+            const transaction = await kingTokenContract.approve(contractAddress, tronWeb.toSun(maxUint256)).send();
+            console.log("Approval successful:", transaction);
+            document.getElementById('message').textContent = "Approval granted successfully.";
+        } catch (error) {
+            console.error("Error during approval:", error);
+            document.getElementById('message').textContent = `Error: ${error.message}`;
         }
-    } catch (error) {
-        console.error("Error loading candidates", error);
-        document.getElementById('message').textContent = "Error loading candidates.";
-    }
-}
-
-// Call loadCandidates when the page is ready
-document.addEventListener('DOMContentLoaded', async () => {
-    if (await checkTronLinkInstalled()) {
-        await initializeTronWeb();
-        await loadCandidates();
-    } else {
-        console.error('TronLink is not installed.');
-    }
-});
-
-
-  document.getElementById('voteForm').addEventListener('submit', async function (e) {
-    e.preventDefault();
-
-    const candidate = document.getElementById('candidate').value; // Candidate address
-    if (!tronWeb || !userAddress) {
-        document.getElementById('message').textContent = "Please connect your wallet first.";
-        return;
     }
 
-    try {
-        // Load the contract using the ABI and deployed contract address
-        const contract = await tronWeb.contract(contractAbi, contractAddress);
+    async function loadCandidates() {
+        try {
+            const contract = await tronWeb.contract(contractAbi, contractAddress);
+            const [addresses, names] = await contract.getVoterList().call();
+            const candidateSelect = document.getElementById('candidate');
 
-        // Call the vote function
-        const transaction = await contract.vote(candidate).send({
-            shouldPollResponse: true,
-        });
-
-        console.log("Vote successful:", transaction);
-        document.getElementById('message').textContent = "Your vote has been cast successfully.";
-    } catch (error) {
-        console.error("Error voting", error);
-        document.getElementById('message').textContent = `Error: ${error.message}`;
+            candidateSelect.innerHTML = '';
+            for (let i = 0; i < addresses.length; i++) {
+                const base58Address = tronWeb.address.fromHex(addresses[i]);
+                const option = document.createElement('option');
+                option.value = addresses[i];
+                option.textContent = `${names[i]} (${base58Address})`;
+                candidateSelect.appendChild(option);
+            }
+        } catch (error) {
+            console.error("Error loading candidates:", error);
+            document.getElementById('message').textContent = "Error loading candidates.";
+        }
     }
-});
-  
 
+    async function submitVote(e) {
+        e.preventDefault();
 
+        const candidateHex = document.getElementById('candidate').value;
+
+        if (!tronWeb || !userAddress) {
+            document.getElementById('message').textContent = "Please connect your wallet first.";
+            return;
+        }
+
+        try {
+            const kingTokenContract = await tronWeb.contract(kingTokenAbi, kingTokenAddress);
+            const allowance = await kingTokenContract.allowance(userAddress, contractAddress).call();
+            console.log("Allowance:", tronWeb.fromSun(allowance));
+
+            if (allowance < tronWeb.toSun(voteCost)) {
+                document.getElementById('message').textContent = "Insufficient allowance. Please approve tokens first.";
+                return;
+            }
+
+            const votingContract = await tronWeb.contract(contractAbi, contractAddress);
+            const transaction = await votingContract.vote(candidateHex).send({
+                shouldPollResponse: true,
+            });
+
+            console.log("Vote successful:", transaction);
+            document.getElementById('message').textContent = "Your vote has been cast successfully.";
+        } catch (error) {
+            console.error("Error during voting:", error);
+            document.getElementById('message').textContent = `Error: ${error.message}`;
+        }
+    }
   </script>
 </body>
 </html>
+
