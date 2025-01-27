@@ -946,39 +946,39 @@
 
     
 
-    document.getElementById('voteForm').addEventListener('submit', async function (e) {
-    e.preventDefault();
+    async function submitVote(event) {
+    event.preventDefault();
 
-    const candidate = document.getElementById('candidate').value; // Candidate address
+    const candidate = document.getElementById('candidate').value;
     if (!tronWeb || !userAddress) {
         document.getElementById('message').textContent = "Please connect your wallet first.";
         return;
     }
 
+    if (!tronWeb.isAddress(candidate)) {
+        document.getElementById('message').textContent = "Please select a valid candidate.";
+        return;
+    }
+
     try {
         const contract = await tronWeb.contract(contractAbi, contractAddress);
-        const tokenContract = await tronWeb.contract(tokenAbi, kingTokenAddress);
+        const costInSun = tronWeb.toSun(voteCost);
 
-        // Step 1: Approve the King Token for the voting transaction
         console.log("Approving tokens...");
-        await tokenContract.approve(contractAddress, tronWeb.toSun(voteCost)).send({
-            shouldPollResponse: true,
-        });
+        await tronWeb.contract(kingTokenAbi, kingTokenAddress)
+            .approve(contractAddress, costInSun)
+            .send();
 
-        console.log("Approval successful. Proceeding to vote...");
-
-        // Step 2: Cast the vote
-        const transaction = await contract.vote(candidate).send({
-            shouldPollResponse: true,
-        });
-
+        console.log("Tokens approved. Casting vote...");
+        const transaction = await contract.vote(candidate).send();
         console.log("Vote successful:", transaction);
         document.getElementById('message').textContent = "Your vote has been cast successfully.";
     } catch (error) {
-        console.error("Error during voting", error);
+        console.error("Error during voting:", error);
         document.getElementById('message').textContent = `Error: ${error.message}`;
     }
-});
+}
+
 
   </script>
 </body>
