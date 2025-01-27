@@ -484,8 +484,12 @@ async function initializeApp() {
     async function loadLeaderboard() {
     try {
         const contract = await tronWeb.contract(contractAbi, contractAddress);
-        // Extract all returned values from the contract
         const [addresses, names, votes] = await contract.getLeaderboard().call();
+
+        // Ensure all arrays are valid and have the same length
+        if (!addresses || !names || !votes || addresses.length !== names.length || addresses.length !== votes.length) {
+            throw new Error("Leaderboard data is incomplete or mismatched.");
+        }
 
         const leaderboardContainer = document.getElementById("leaderboard");
 
@@ -497,16 +501,10 @@ async function initializeApp() {
         console.log("Voter Names:", names);
         console.log("Raw Votes:", votes);
 
-        // Check if there are participants
-        if (addresses.length === 0) {
-            leaderboardContainer.innerHTML = `<tr><td colspan="3">No participants found.</td></tr>`;
-            return;
-        }
-
         // Iterate through participants
         addresses.forEach((address, index) => {
             const base58Address = tronWeb.address.fromHex(address);
-            const participantName = names[index]; // Get the name
+            const participantName = names[index];
             const voteCount = parseInt(votes[index], 10); // Parse votes as decimal
 
             // Append rows to leaderboard
@@ -525,6 +523,7 @@ async function initializeApp() {
         document.getElementById("message").textContent = `Error loading leaderboard: ${error.message}`;
     }
 }
+
 
 
 
