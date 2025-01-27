@@ -91,6 +91,10 @@
 <body>
   <div class="container">
     <div class="form-container">
+       <div class="button">
+                <button type="button" id="connectWallet">Connect Wallet</button>
+            </div>
+
         <h2>Vote</h2>
         <form id="voteForm">
             <label for="candidate">Select Candidate</label>
@@ -98,16 +102,11 @@
                 <!-- Dynamically populated with registered candidates -->
             </select>
 
-            <div class="button">
-                <button type="button" id="connectWallet">Connect Wallet</button>
-            </div>
-
+           
             <label for="wallet">Your Wallet Address</label>
             <input type="text" id="wallet" name="wallet" placeholder="Wallet address will appear here" readonly required>
 
-            <div class="button">
-                <button type="button" id="approveButton">Approve Tokens</button>
-            </div>
+           
 
             <div class="button">
                 <button type="submit">Vote</button>
