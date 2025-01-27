@@ -43,6 +43,25 @@
             margin-bottom: 20px;
         }
 
+    .btn-link {
+        display: inline-block;
+        text-decoration: none;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        background: linear-gradient(135deg, #ffd700, #d4af37);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin: 5px;
+    }
+
+    .btn-link:hover {
+        transform: scale(1.05);
+        background: linear-gradient(135deg, #d4af37, #ffd700);
+    }
         h2 {
             color: rgba(255, 215, 0, 1);
         }
@@ -139,11 +158,11 @@
 
   <div class="container">
     <div class="form-container">
-      <div class="button-group">
-                <a href="king.html" target="_blank" class="button">Home</a>
-                <a href="register2.html" target="_blank" class="button">Register</a>
-                <a href="vote.html" target="_blank" class="button">Vote</a>
-            </div>
+     <div class="button-group">
+    <a href="king.html" target="_blank" class="btn-link">Home</a>
+    <a href="register2.html" target="_blank" class="btn-link">Register</a>
+    <a href="vote.html" target="_blank" class="btn-link">Vote</a>
+</div>
     <h2>Vote for a King</h2>
       <div class="button">
     <button type="button" id="connectWallet">Connect Wallet</button>
