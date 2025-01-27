@@ -502,7 +502,8 @@ async function initializeApp() {
             const base58Address = tronWeb.address.fromHex(address);
 
             // Parse votes safely
-            let voteCount = parseInt(votes[index]._hex || votes[index], 16);
+            const voteCount = parseInt(votes[index], 10); // Safely parse as decimal
+
 
             // Append row
             leaderboardContainer.innerHTML += `
