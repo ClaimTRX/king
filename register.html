@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KING Registration</title>
+  <title>The King Registration</title>
   <link rel="icon" href="https://raw.githubusercontent.com/ClaimTRX/Test/main/favicon-32x32.png" type="image/png">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -36,7 +36,33 @@
             border: 1px solid rgba(255, 215, 0, 0.8);
             box-sizing: border-box;
         }
+    
+    .button-group {
+        display: flex;
+        justify-content: center; /* Center the buttons horizontally */
+        gap: 15px; /* Add spacing between buttons */
+        margin-bottom: 20px; /* Add space below the group */
+    }
 
+    .btn-link {
+        display: inline-block;
+        text-decoration: none;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        background: linear-gradient(135deg, #ffd700, #d4af37);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin: 5px;
+    }
+
+    .btn-link:hover {
+        transform: scale(1.05);
+        background: linear-gradient(135deg, #d4af37, #ffd700);
+    }
         h2 {
             color: rgba(255, 215, 0, 1);
         }
@@ -49,7 +75,7 @@
             font-size: 1rem;
         }
 
-        input {
+        input, select {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -86,11 +112,57 @@
             font-size: 0.9rem;
             color: #c5c5c5;
         }
-    </style>
+
+     table.leaderboard {
+        width: 100%;
+        max-width: 600px;
+        margin: 20px auto;
+        border-collapse: collapse;
+        text-align: left;
+        background: #1a1c22;
+        color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+    }
+
+    table.leaderboard th,
+    table.leaderboard td {
+        padding: 12px;
+        border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    table.leaderboard th {
+        background: rgba(255, 215, 0, 0.8);
+        color: black;
+        text-transform: uppercase;
+        font-size: 1rem;
+    }
+
+    table.leaderboard tr:nth-child(even) {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    table.leaderboard tr:hover {
+        background: rgba(255, 215, 0, 0.2);
+        transition: background-color 0.3s ease;
+    }
+
+    .leaderboard-container {
+        margin-top: 20px;
+        text-align: center;
+    }
+  </style>
 </head>
 <body>
+  
     <div class="container">
     <div class="form-container">
+      <div class="button-group">
+    <a href="home.html" class="btn-link">Home</a>
+    <a href="register.html" class="btn-link">Register</a>
+    <a href="vote.html" class="btn-link">Vote</a>
+</div>
         <h2>Register as a King</h2>
         <form id="registerForm">
             <label for="name">Your Name</label>
