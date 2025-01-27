@@ -933,18 +933,16 @@
         const contract = await tronWeb.contract(contractAbi, contractAddress);
         const [addresses, names] = await contract.getVoterList().call();
 
-        console.log("Addresses:", addresses);
-        console.log("Names:", names);
+        console.log("Fetched Addresses:", addresses);
+        console.log("Fetched Names:", names);
 
         const candidateSelect = document.getElementById('candidate');
-        candidateSelect.innerHTML = ''; // Clear any existing options
+        candidateSelect.innerHTML = ''; // Clear existing options
 
-        // Check if addresses and names arrays are populated
         if (addresses.length === 0 || names.length === 0) {
             throw new Error("No candidates found. Ensure candidates are registered.");
         }
 
-        // Populate the dropdown with candidates
         for (let i = 0; i < addresses.length; i++) {
             const base58Address = tronWeb.address.fromHex(addresses[i]); // Convert Hex to Base58
             const option = document.createElement('option');
@@ -958,6 +956,7 @@
         document.getElementById('message').textContent = `Error loading candidates: ${error.message}`;
     }
 }
+
 
     async function loadLeaderboard() {
         try {
