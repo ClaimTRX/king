@@ -854,6 +854,7 @@
 
 
     document.addEventListener('DOMContentLoaded', async () => {
+    try {
         document.getElementById('connectWallet').addEventListener('click', connectWallet);
         document.getElementById('approveButton').addEventListener('click', approveTokens);
         document.getElementById('voteForm').addEventListener('submit', submitVote);
@@ -862,9 +863,14 @@
             await initializeTronWeb();
             await loadCandidates();
         } else {
-            console.error('TronLink is not installed.');
+            document.getElementById('message').textContent = "TronLink is not installed. Please install it to continue.";
         }
-    });
+    } catch (error) {
+        console.error("Initialization error:", error);
+        document.getElementById('message').textContent = `Error initializing app: ${error.message}`;
+    }
+});
+
 
     async function checkTronLinkInstalled() {
         return new Promise(resolve => {
@@ -908,23 +914,36 @@
     }
 
     async function loadCandidates() {
-        try {
-            const contract = await tronWeb.contract(contractAbi, contractAddress);
-            const [addresses, names] = await contract.getVoterList().call();
-            const candidateSelect = document.getElementById('candidate');
+    try {
+        const contract = await tronWeb.contract(contractAbi, contractAddress);
+        const [addresses, names] = await contract.getVoterList().call();
 
-            candidateSelect.innerHTML = '';
-            for (let i = 0; i < addresses.length; i++) {
-                const base58Address = tronWeb.address.fromHex(addresses[i]);
-                const option = document.createElement('option');
-                option.value = addresses[i];
-                option.textContent = `${names[i]} (${base58Address})`;
-                candidateSelect.appendChild(option);
-            }
-        } catch (error) {
-            console.error("Error loading candidates:", error);
-            document.getElementById('message').textContent = "Error loading candidates.";
+        console.log("Addresses:", addresses);
+        console.log("Names:", names);
+
+        const candidateSelect = document.getElementById('candidate');
+        candidateSelect.innerHTML = ''; // Clear any existing options
+
+        // Check if addresses and names arrays are populated
+        if (addresses.length === 0 || names.length === 0) {
+            throw new Error("No candidates found. Ensure candidates are registered.");
         }
+
+        // Populate the dropdown with candidates
+        for (let i = 0; i < addresses.length; i++) {
+            const base58Address = tronWeb.address.fromHex(addresses[i]); // Convert Hex to Base58
+            const option = document.createElement('option');
+            option.value = addresses[i]; // Candidate address in Hex
+            option.textContent = `${names[i]} (${base58Address})`;
+            candidateSelect.appendChild(option);
+        }
+        document.getElementById('message').textContent = "Candidates loaded successfully.";
+    } catch (error) {
+        console.error("Error loading candidates:", error);
+        document.getElementById('message').textContent = `Error loading candidates: ${error.message}`;
+    }
+}
+
     }
 
     document.getElementById('voteForm').addEventListener('submit', async function (e) {
