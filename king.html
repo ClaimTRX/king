@@ -168,7 +168,14 @@
             <h2>About the King Token</h2>
             <p>The King Token is your gateway to the kingdom. Each week, holders of King Token have the power to vote for their favorite candidate to be crowned "King of the Week." The crowned King will receive the entire 5% buy tax collected from all transactions during the week, making it a highly sought-after title!</p>
             <p>Register on our website with your name and wallet address to participate in the voting and stand a chance to become the King of the Week. Each vote costs a certain amount of King Tokens, so use your tokens wisely and make your voice heard in the kingdom!</p><br>
-            
+            <p>
+    King token contract address:
+    <span id="contractAddress" style="cursor: pointer; text-decoration: underline; color: #ffd700;">
+        TMFNzkJaj573F62s4bWmfonKwGcosAA8fE
+    </span>
+</p>
+<p id="copyMessage" style="color: #c5c5c5; font-size: 0.9rem;"></p>
+
             </div>
           <div class="button-group">
     <a href="https://www.dextools.io/app/en/tron/pair-explorer/TQ2HCSvpir3ELSJg3J2wKG6TskePh74rz8?t=1736276358261" class="btn-link">Chart</a>
@@ -177,5 +184,20 @@
 </div>
         </div>
     </div>
+
+  <script>
+    document.getElementById('contractAddress').addEventListener('click', function () {
+        const contractAddress = this.textContent; // Get the address
+        navigator.clipboard.writeText(contractAddress).then(() => {
+            const copyMessage = document.getElementById('copyMessage');
+            copyMessage.textContent = 'Copied to clipboard!';
+            setTimeout(() => {
+                copyMessage.textContent = ''; // Clear the message after 2 seconds
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy:', err);
+        });
+    });
+</script>
 </body>
 </html>
