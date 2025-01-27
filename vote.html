@@ -487,6 +487,7 @@ async function initializeApp() {
 
         // Ensure all arrays are valid and have the same length
         if (!names || !votes || names.length !== votes.length) {
+            console.warn("Leaderboard data mismatch:", { names, votes });
             throw new Error("Leaderboard data is incomplete or mismatched.");
         }
 
@@ -494,6 +495,12 @@ async function initializeApp() {
 
         // Clear existing rows (keep headers intact)
         leaderboardContainer.innerHTML = "";
+
+        // Handle empty leaderboard
+        if (names.length === 0) {
+            leaderboardContainer.innerHTML = `<tr><td colspan="2">No participants found.</td></tr>`;
+            return;
+        }
 
         // Debug raw data
         console.log("Voter Names:", names);
@@ -519,6 +526,7 @@ async function initializeApp() {
         document.getElementById("message").textContent = `Error loading leaderboard: ${error.message}`;
     }
 }
+
 
 
 
