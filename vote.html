@@ -141,6 +141,25 @@
     const maxUint256 = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
 
     const contractAbi = [
+      {
+    "inputs": [],
+    "name": "getLeaderboard",
+    "outputs": [
+        {
+            "internalType": "address[]",
+            "name": "",
+            "type": "address[]"
+        },
+        {
+            "internalType": "uint256[]",
+            "name": "",
+            "type": "uint256[]"
+        }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+}
+
     {
         "inputs": [
             {
@@ -970,9 +989,6 @@ async function initializeApp() {
         const contract = await tronWeb.contract(contractAbi, contractAddress);
         const [addresses, votes] = await contract.getLeaderboard().call();
 
-        console.log("Leaderboard Addresses:", addresses);
-        console.log("Leaderboard Votes:", votes);
-
         const leaderboardContainer = document.getElementById("leaderboard");
         leaderboardContainer.innerHTML = `
             <tr>
@@ -1000,9 +1016,11 @@ async function initializeApp() {
         document.getElementById("message").textContent = "Leaderboard loaded successfully.";
     } catch (error) {
         console.error("Error loading leaderboard:", error);
-        document.getElementById("message").textContent = `Error loading leaderboard: ${error.message}`;
+        document.getElementById("message").textContent =
+            `Error loading leaderboard: ${error.message}`;
     }
 }
+
 
 
     
