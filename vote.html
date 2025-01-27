@@ -501,7 +501,8 @@ async function initializeApp() {
 
         addresses.forEach((address, index) => {
             const base58Address = tronWeb.address.fromHex(address);
-            const voteCount = parseInt(votes[index]._hex, 16); // Convert from hexadecimal if necessary
+            const voteCount = parseInt(votes[index], 10); // Convert to base-10 integer
+
             leaderboardContainer.innerHTML += `
                 <tr>
                     <td>Participant ${index + 1}</td>
