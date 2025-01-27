@@ -1025,42 +1025,40 @@ async function initializeApp() {
 
     
 
-   async function submitVote(event) {
+  async function submitVote(event) {
     event.preventDefault();
+    console.log("Vote button clicked!");
 
     const candidate = document.getElementById("candidate").value;
     if (!tronWeb || !userAddress) {
         document.getElementById("message").textContent = "Please connect your wallet first.";
+        console.log("Wallet not connected.");
         return;
     }
 
     if (!tronWeb.isAddress(candidate)) {
         document.getElementById("message").textContent = "Please select a valid candidate.";
+        console.log("Invalid candidate address.");
         return;
     }
 
     try {
+        console.log("Preparing to call vote function...");
         const contract = await tronWeb.contract(contractAbi, contractAddress);
-        const kingTokenContract = await tronWeb.contract(kingTokenAbi, kingTokenAddress);
-        const costInSun = tronWeb.toSun(voteCost);
 
-        // Approve tokens
-        console.log("Approving tokens...");
-        await kingTokenContract.approve(contractAddress, costInSun).send();
-
-        console.log("Tokens approved. Casting vote...");
-        // Cast the vote
+        // Call the vote function in the smart contract
+        console.log("Sending transaction to vote for:", candidate);
         const transaction = await contract.vote(candidate).send();
-
         console.log("Vote successful:", transaction);
+
         document.getElementById("message").textContent = "Your vote has been cast successfully.";
-        // Refresh the leaderboard
         await loadLeaderboard();
     } catch (error) {
         console.error("Error during voting:", error);
         document.getElementById("message").textContent = `Error: ${error.message}`;
     }
 }
+
 
 
 
