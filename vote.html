@@ -486,25 +486,23 @@ async function initializeApp() {
         const [addresses, votes] = await contract.getLeaderboard().call();
 
         const leaderboardContainer = document.getElementById("leaderboard");
-        leaderboardContainer.innerHTML = `
-            <tr>
-                <th>Participant Name</th>
-                <th>Wallet Address</th>
-                <th>Total Votes</th>
-            </tr>
-        `;
+        leaderboardContainer.innerHTML = ""; // Clear existing leaderboard content
 
         if (addresses.length === 0) {
-            leaderboardContainer.innerHTML += `<tr><td colspan="3">No participants found.</td></tr>`;
+            leaderboardContainer.innerHTML = `<tr><td colspan="3">No participants found.</td></tr>`;
             return;
         }
 
         addresses.forEach((address, index) => {
             const base58Address = tronWeb.address.fromHex(address);
+            const name = `Participant ${index + 1}`; // Customize as needed
+            const voteCount = parseInt(votes[index]) || 0; // Ensure vote count is a number
+
             leaderboardContainer.innerHTML += `
                 <tr>
+                    <td>${name}</td>
                     <td>${base58Address}</td>
-                    <td>${votes[index]}</td>
+                    <td>${voteCount}</td>
                 </tr>
             `;
         });
@@ -512,8 +510,7 @@ async function initializeApp() {
         document.getElementById("message").textContent = "Leaderboard loaded successfully.";
     } catch (error) {
         console.error("Error loading leaderboard:", error);
-        document.getElementById("message").textContent =
-            `Error loading leaderboard: ${error.message}`;
+        document.getElementById("message").textContent = `Error loading leaderboard: ${error.message}`;
     }
 }
 
