@@ -485,8 +485,6 @@ async function initializeApp() {
         const contract = await tronWeb.contract(contractAbi, contractAddress);
         const [addresses, votes] = await contract.getLeaderboard().call();
 
-        console.log("Debug Leaderboard Data: ", addresses, votes);
-
         const leaderboardContainer = document.getElementById("leaderboard");
         leaderboardContainer.innerHTML = `
             <tr>
@@ -496,12 +494,19 @@ async function initializeApp() {
             </tr>
         `;
 
+        if (addresses.length === 0) {
+            leaderboardContainer.innerHTML += `<tr><td colspan="3">No participants found.</td></tr>`;
+            return;
+        }
+
         addresses.forEach((address, index) => {
             const base58Address = tronWeb.address.fromHex(address);
+            const voteCount = parseInt(votes[index]._hex, 16); // Convert from hexadecimal if necessary
             leaderboardContainer.innerHTML += `
                 <tr>
+                    <td>Participant ${index + 1}</td>
                     <td>${base58Address}</td>
-                    <td>${votes[index]}</td>
+                    <td>${voteCount}</td>
                 </tr>
             `;
         });
@@ -509,10 +514,10 @@ async function initializeApp() {
         document.getElementById("message").textContent = "Leaderboard loaded successfully.";
     } catch (error) {
         console.error("Error loading leaderboard:", error);
-        document.getElementById("message").textContent =
-            `Error loading leaderboard: ${error.message}`;
+        document.getElementById("message").textContent = `Error loading leaderboard: ${error.message}`;
     }
 }
+
 
 
 
