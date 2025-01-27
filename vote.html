@@ -867,24 +867,21 @@
 ];
 
 
-    document.addEventListener('DOMContentLoaded', async () => {
+    ddocument.addEventListener("DOMContentLoaded", async () => {
     try {
-        document.getElementById('connectWallet').addEventListener('click', connectWallet);
-        document.getElementById('approveButton').addEventListener('click', approveTokens);
-        document.getElementById('voteForm').addEventListener('submit', submitVote);
-
         if (await checkTronLinkInstalled()) {
             await initializeTronWeb();
             await loadCandidates();
             await loadLeaderboard();
         } else {
-            document.getElementById('message').textContent = "TronLink is not installed. Please install it to continue.";
+            document.getElementById("message").textContent = "TronLink is not installed. Please install it to continue.";
         }
     } catch (error) {
         console.error("Initialization error:", error);
-        document.getElementById('message').textContent = `Error initializing app: ${error.message}`;
+        document.getElementById("message").textContent = `Error initializing app: ${error.message}`;
     }
 });
+
 
 
     async function checkTronLinkInstalled() {
