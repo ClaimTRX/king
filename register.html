@@ -183,11 +183,24 @@
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/tronweb/dist/TronWeb.min.js"></script>
 <script>
     let tronWeb, userAddress;
     const contractAddress = "TL8GEzSKj3vgoQo5huQJ5NmTDr2osVVXwR"; // Replace with your contract address
+    const tokenAddress = "YourTokenContractAddress"; // Replace with your token contract address
+    const tokenAbi = [
+        {
+            "constant": false,
+            "inputs": [
+                { "name": "_spender", "type": "address" },
+                { "name": "_value", "type": "uint256" }
+            ],
+            "name": "approve",
+            "outputs": [{ "name": "", "type": "bool" }],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }
+    ];
     const contractAbi = [
         {
             "inputs": [
@@ -252,6 +265,19 @@
         }
     }
 
+    async function approveTokens(spenderAddress, amount) {
+        try {
+            const tokenContract = await tronWeb.contract(tokenAbi, tokenAddress);
+            await tokenContract.approve(spenderAddress, amount).send({
+                shouldPollResponse: true,
+            });
+            console.log("Token approval successful");
+        } catch (error) {
+            console.error("Token approval failed", error);
+            throw new Error("Approval failed");
+        }
+    }
+
     document.getElementById('registerForm').addEventListener('submit', async function (e) {
         e.preventDefault();
 
@@ -262,6 +288,11 @@
         }
 
         try {
+            // Approve tokens first
+            const approveAmount = tronWeb.toSun(100); // Replace 100 with the required token amount
+            await approveTokens(contractAddress, approveAmount);
+
+            // Then proceed with registration
             const contract = await tronWeb.contract(contractAbi, contractAddress);
             const transaction = await contract.registerAsKing(name).send({
                 shouldPollResponse: true,
@@ -270,11 +301,12 @@
             console.log("Registration successful:", transaction);
             document.getElementById('message').textContent = `Thank you, ${name}! You have been registered successfully.`;
         } catch (error) {
-            console.error("Error registering", error);
+            console.error("Error during registration", error);
             document.getElementById('message').textContent = `Error: ${error.message}`;
         }
     });
 </script>
+
 </body>
 </html>
 
