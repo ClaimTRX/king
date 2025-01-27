@@ -114,6 +114,21 @@
         </form>
         <div class="message" id="message"></div>
     </div>
+ <div class="leaderboard-container">
+        <h2>Leaderboard</h2>
+        <table class="leaderboard">
+            <thead>
+                <tr>
+                    <th>Participant Name</th>
+                    <th>Wallet Address</th>
+                    <th>Total Votes</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboard">
+                <!-- Dynamically populated with leaderboard data -->
+            </tbody>
+        </table>
+    </div>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -861,6 +876,7 @@
         if (await checkTronLinkInstalled()) {
             await initializeTronWeb();
             await loadCandidates();
+          await loadLeaderboard();
         } else {
             document.getElementById('message').textContent = "TronLink is not installed. Please install it to continue.";
         }
@@ -942,6 +958,29 @@
         document.getElementById('message').textContent = `Error loading candidates: ${error.message}`;
     }
 }
+
+    async function loadLeaderboard() {
+        try {
+            const contract = await tronWeb.contract(contractAbi, contractAddress);
+            const [addresses, votes] = await contract.getLeaderboard().call();
+            const leaderboard = document.getElementById('leaderboard');
+
+            leaderboard.innerHTML = '';
+            for (let i = 0; i < addresses.length; i++) {
+                const base58Address = tronWeb.address.fromHex(addresses[i]);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${addresses[i]}</td>
+                    <td>${base58Address}</td>
+                    <td>${votes[i]}</td>
+                `;
+                leaderboard.appendChild(row);
+            }
+        } catch (error) {
+            console.error("Error loading leaderboard:", error);
+            document.getElementById('message').textContent = "Error loading leaderboard.";
+        }
+    }
 
     
 
