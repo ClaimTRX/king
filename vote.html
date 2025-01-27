@@ -332,7 +332,7 @@ async function loadCandidates() {
             `;
         });
 
-        document.getElementById("voteMessage").textContent = ".";
+        document.getElementById("voteMessage").textContent = "";
     } catch (error) {
         console.error("Error loading leaderboard:", error);
         document.getElementById("voteMessage").textContent = `Error: ${error.message}`;
