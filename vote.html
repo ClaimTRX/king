@@ -805,103 +805,75 @@
 ];
 
 
-     let tronWeb, userAddress;
+      const connectWalletButton = document.getElementById('connectWallet');
+        const voteForm = document.getElementById('voteForm');
+        const walletInput = document.getElementById('wallet');
+        const candidateSelect = document.getElementById('candidate');
+        const messageDiv = document.getElementById('message');
 
-   document.addEventListener('DOMContentLoaded', async () => {
-        document.getElementById('connectWallet').addEventListener('click', connectWallet);
-        document.getElementById('approveButton').addEventListener('click', approveTokens);
-        document.getElementById('voteForm').addEventListener('submit', submitVote);
-
-        if (await checkTronLinkInstalled()) {
-            await initializeTronWeb();
-            await loadCandidates();
-        } else {
-            console.error('TronLink is not installed.');
-        }
-    });
-
-    async function checkTronLinkInstalled() {
-        return new Promise(resolve => {
-            const interval = setInterval(() => {
-                if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
-                    clearInterval(interval);
-                    resolve(true);
-                }
-            }, 1000);
-        });
-    }
-
-    async function connectWallet() {
-        try {
-            await tronLink.request({ method: 'tron_requestAccounts' });
-            await initializeTronWeb();
-        } catch (error) {
-            console.error('Failed to connect to TronLink:', error);
-        }
-    }
-
-    async function initializeTronWeb() {
-        tronWeb = window.tronWeb;
-        userAddress = tronWeb.defaultAddress.base58;
-
-        console.log('Connected to TronLink.');
-        document.getElementById('wallet').value = userAddress;
-        document.getElementById('message').textContent = "Wallet connected successfully.";
-    }
-
-
-    async function loadCandidates() {
-        try {
-            const contract = await tronWeb.contract(contractAbi, contractAddress);
-            const [addresses, names] = await contract.getVoterList().call();
-            const candidateSelect = document.getElementById('candidate');
-
-            candidateSelect.innerHTML = ''; // Clear existing options
-            for (let i = 0; i < addresses.length; i++) {
-                const base58Address = tronWeb.address.fromHex(addresses[i]);
-                const option = document.createElement('option');
-                option.value = addresses[i];
-                option.textContent = `${names[i]} (${base58Address})`;
-                candidateSelect.appendChild(option);
+        async function connectWallet() {
+            try {
+                await tronLink.request({ method: 'tron_requestAccounts' });
+                tronWeb = window.tronWeb;
+                userAddress = tronWeb.defaultAddress.base58;
+                walletInput.value = userAddress;
+                messageDiv.textContent = "Wallet connected successfully.";
+            } catch (error) {
+                console.error("Error connecting wallet:", error);
+                messageDiv.textContent = "Failed to connect wallet.";
             }
-        } catch (error) {
-            console.error("Error loading candidates:", error);
-            document.getElementById('message').textContent = "Failed to load candidates.";
-        }
-    }
-
-    async function submitVote(event) {
-        event.preventDefault();
-        const candidate = document.getElementById('candidate').value;
-
-        if (!tronWeb || !userAddress) {
-            document.getElementById('message').textContent = "Please connect your wallet first.";
-            return;
         }
 
-        try {
-            const kingToken = await tronWeb.contract(kingTokenAbi, kingTokenAddress);
-            const contract = await tronWeb.contract(contractAbi, contractAddress);
+        async function loadCandidates() {
+            try {
+                const contract = await tronWeb.contract(contractAbi, contractAddress);
+                const [addresses, names] = await contract.getVoterList().call();
 
-            console.log("Approving tokens...");
-            await kingToken.approve(contractAddress, tronWeb.toSun(voteCost)).send();
-            console.log("Tokens approved.");
-
-            console.log("Casting vote...");
-            const transaction = await contract.vote(candidate).send({ shouldPollResponse: true });
-            console.log("Vote successful:", transaction);
-
-            document.getElementById('message').textContent = "Vote cast successfully!";
-        } catch (error) {
-            console.error("Error during voting:", error);
-            document.getElementById('message').textContent = `Error: ${error.message}`;
+                candidateSelect.innerHTML = '';
+                for (let i = 0; i < addresses.length; i++) {
+                    const base58Address = tronWeb.address.fromHex(addresses[i]);
+                    const option = document.createElement('option');
+                    option.value = addresses[i];
+                    option.textContent = `${names[i]} (${base58Address})`;
+                    candidateSelect.appendChild(option);
+                }
+            } catch (error) {
+                console.error("Error loading candidates:", error);
+                messageDiv.textContent = "Failed to load candidates.";
+            }
         }
-    }
 
-    document.getElementById('connectWallet').addEventListener('click', connectWallet);
-    document.getElementById('voteForm').addEventListener('submit', submitVote);
+        async function submitVote(event) {
+            event.preventDefault();
+            const candidate = candidateSelect.value;
 
-    document.addEventListener('DOMContentLoaded', async () => {
+            if (!tronWeb || !userAddress) {
+                messageDiv.textContent = "Please connect your wallet first.";
+                return;
+            }
+
+            try {
+                const kingToken = await tronWeb.contract(kingTokenAbi, kingTokenAddress);
+                const contract = await tronWeb.contract(contractAbi, contractAddress);
+
+                console.log("Approving tokens...");
+                await kingToken.approve(contractAddress, tronWeb.toSun(voteCost)).send();
+                console.log("Tokens approved.");
+
+                console.log("Casting vote...");
+                const transaction = await contract.vote(candidate).send({ shouldPollResponse: true });
+                console.log("Vote successful:", transaction);
+
+                messageDiv.textContent = "Vote cast successfully!";
+            } catch (error) {
+                console.error("Error during voting:", error);
+                messageDiv.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        connectWalletButton.addEventListener('click', connectWallet);
+        voteForm.addEventListener('submit', submitVote);
+
         if (window.tronWeb) {
             tronWeb = window.tronWeb;
             userAddress = tronWeb.defaultAddress.base58;
