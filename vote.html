@@ -887,8 +887,16 @@
 
 
     document.addEventListener("DOMContentLoaded", async () => {
-      document.getElementById("voteForm").addEventListener("submit", submitVote);
+    // Ensure the vote form's submit event is properly attached
+    const voteForm = document.getElementById("voteForm");
+    if (voteForm) {
+        voteForm.addEventListener("submit", submitVote);
+    } else {
+        console.error("Vote form not found in the DOM.");
+    }
+
     try {
+        // Initialize the app after DOM content is loaded
         await initializeApp();
     } catch (error) {
         console.error("Initialization error:", error);
