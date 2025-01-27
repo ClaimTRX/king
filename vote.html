@@ -937,15 +937,16 @@
         console.log("Voter Names:", names);
 
         const candidateSelect = document.getElementById("candidate");
-        candidateSelect.innerHTML = "";
+        candidateSelect.innerHTML = ""; // Clear previous options
 
         if (addresses.length === 0 || names.length === 0) {
+            console.warn("No registered candidates found.");
             document.getElementById("message").textContent = "No registered candidates found.";
             return;
         }
 
         addresses.forEach((address, index) => {
-            const base58Address = tronWeb.address.fromHex(address);
+            const base58Address = tronWeb.address.fromHex(address); // Convert Hex to Base58
             const option = document.createElement("option");
             option.value = address;
             option.textContent = `${names[index]} (${base58Address})`;
@@ -961,10 +962,14 @@
 
 
 
+
     async function loadLeaderboard() {
     try {
         const contract = await tronWeb.contract(contractAbi, contractAddress);
         const [addresses, votes] = await contract.getLeaderboard().call();
+
+        console.log("Leaderboard Addresses:", addresses);
+        console.log("Leaderboard Votes:", votes);
 
         const leaderboardContainer = document.getElementById("leaderboard");
         leaderboardContainer.innerHTML = `
