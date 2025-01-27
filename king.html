@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to the Kingdom</title>
-    <style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The King Registration</title>
+  <link rel="icon" href="https://raw.githubusercontent.com/ClaimTRX/Test/main/favicon-32x32.png" type="image/png">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
         body {
             margin: 0;
             font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #1d1f27, #2b2e3a);
             color: white;
-            overflow: hidden;
         }
 
         .container {
@@ -20,57 +22,147 @@
             align-items: center;
             height: 100vh;
             text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
-        .welcome {
-            position: relative;
-            top: -100px;
-            margin-bottom: 40px;
-            font-size: 4rem;
-            color: rgba(255, 215, 0, 1);
-        }
-
-        .content {
-            max-width: 800px;
+        .form-container {
+            width: 100%;
+            max-width: 600px;
             padding: 20px;
             background: #1a1c22;
             border-radius: 10px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(255, 215, 0, 0.8);
+            box-sizing: border-box;
         }
+    
+    .button-group {
+        display: flex;
+        justify-content: center; /* Center the buttons horizontally */
+        gap: 15px; /* Add spacing between buttons */
+        margin-bottom: 20px; /* Add space below the group */
+    }
 
+    .btn-link {
+        display: inline-block;
+        text-decoration: none;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        background: linear-gradient(135deg, #ffd700, #d4af37);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin: 5px;
+    }
+
+    .btn-link:hover {
+        transform: scale(1.05);
+        background: linear-gradient(135deg, #d4af37, #ffd700);
+    }
         h2 {
             color: rgba(255, 215, 0, 1);
-            margin-bottom: 10px;
         }
 
-        p {
+        label {
+            display: block;
+            margin-top: 10px;
+            text-align: left;
             color: #c5c5c5;
-            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+            box-sizing: border-box;
         }
 
         .button {
             margin-top: 20px;
         }
 
-        .button a {
+        .button button {
             text-decoration: none;
             color: white;
             padding: 10px 20px;
             border-radius: 5px;
             background: linear-gradient(135deg, #ffd700, #d4af37);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
             transition: all 0.3s ease;
         }
 
-        .button a:hover {
+        .button button:hover {
             transform: scale(1.05);
             background: linear-gradient(135deg, #d4af37, #ffd700);
         }
-    </style>
+
+        .message {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #c5c5c5;
+        }
+
+     table.leaderboard {
+        width: 100%;
+        max-width: 600px;
+        margin: 20px auto;
+        border-collapse: collapse;
+        text-align: left;
+        background: #1a1c22;
+        color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+    }
+
+    table.leaderboard th,
+    table.leaderboard td {
+        padding: 12px;
+        border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    table.leaderboard th {
+        background: rgba(255, 215, 0, 0.8);
+        color: black;
+        text-transform: uppercase;
+        font-size: 1rem;
+    }
+
+    table.leaderboard tr:nth-child(even) {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    table.leaderboard tr:hover {
+        background: rgba(255, 215, 0, 0.2);
+        transition: background-color 0.3s ease;
+    }
+
+    .leaderboard-container {
+        margin-top: 20px;
+        text-align: center;
+    }
+  </style>
 </head>
 <body>
+  
     <div class="container">
+    <div class="form-container">
+      <div class="button-group">
+    <a href="home.html" class="btn-link">Home</a>
+    <a href="register.html" class="btn-link">Register</a>
+    <a href="vote.html" class="btn-link">Vote</a>
+</div>
         <div class="welcome">Welcome to the Kingdom</div>
         <div class="content">
             <h2>About the King Token</h2>
