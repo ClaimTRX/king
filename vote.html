@@ -1043,20 +1043,24 @@ async function initializeApp() {
         const contract = await tronWeb.contract(contractAbi, contractAddress);
         const costInSun = tronWeb.toSun(voteCost);
 
+        // Approve tokens
         console.log("Approving tokens...");
         await tronWeb.contract(kingTokenAbi, kingTokenAddress)
             .approve(contractAddress, costInSun)
             .send();
 
         console.log("Tokens approved. Casting vote...");
+        // Cast vote
         const transaction = await contract.vote(candidate).send();
         console.log("Vote successful:", transaction);
+
         document.getElementById('message').textContent = "Your vote has been cast successfully.";
     } catch (error) {
         console.error("Error during voting:", error);
         document.getElementById('message').textContent = `Error: ${error.message}`;
     }
 }
+
 
 
   </script>
