@@ -279,32 +279,32 @@
     }
 
     document.getElementById('registerForm').addEventListener('submit', async function (e) {
-        e.preventDefault();
+    e.preventDefault();
 
-        const name = document.getElementById('name').value;
-        if (!tronWeb || !userAddress) {
-            document.getElementById('message').textContent = "Please connect your wallet first.";
-            return;
-        }
+    const name = document.getElementById('name').value;
+    if (!tronWeb || !userAddress) {
+        document.getElementById('message').textContent = "Please connect your wallet first.";
+        return;
+    }
 
-        try {
-            // Approve tokens first
-            const approveAmount = tronWeb.toSun(100); // Replace 100 with the required token amount
-            await approveTokens(contractAddress, approveAmount);
+    try {
+        const approveAmount = tronWeb.toSun(100); // Replace with the required token amount
 
-            // Then proceed with registration
-            const contract = await tronWeb.contract(contractAbi, contractAddress);
-            const transaction = await contract.registerAsKing(name).send({
-                shouldPollResponse: true,
-            });
+        // Step 1: Approve Tokens
+        await approveTokens(contractAddress, approveAmount);
 
-            console.log("Registration successful:", transaction);
-            document.getElementById('message').textContent = `Thank you, ${name}! You have been registered successfully.`;
-        } catch (error) {
-            console.error("Error during registration", error);
-            document.getElementById('message').textContent = `Error: ${error.message}`;
-        }
-    });
+        // Step 2: Register as King
+        const contract = await tronWeb.contract(contractAbi, contractAddress);
+        const transaction = await contract.registerAsKing(name).send({ shouldPollResponse: true });
+
+        console.log("Registration successful:", transaction);
+        document.getElementById('message').textContent = `Thank you, ${name}! You have been registered successfully.`;
+    } catch (error) {
+        console.error("Error during registration:", error);
+        document.getElementById('message').textContent = `Error: ${error.message}`;
+    }
+});
+
 </script>
 
 </body>
