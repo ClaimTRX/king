@@ -484,11 +484,12 @@ async function initializeApp() {
     async function loadLeaderboard() {
     try {
         const contract = await tronWeb.contract(contractAbi, contractAddress);
-        const [addresses, votes] = await contract.getLeaderboard().call();
+        // Extract all returned values from the contract
+        const [addresses, names, votes] = await contract.getLeaderboard().call();
 
         const leaderboardContainer = document.getElementById("leaderboard");
 
-        // Clear existing rows (only keep headers)
+        // Clear existing rows (keep headers intact)
         leaderboardContainer.innerHTML = "";
 
         // Debug raw data
@@ -505,18 +506,13 @@ async function initializeApp() {
         // Iterate through participants
         addresses.forEach((address, index) => {
             const base58Address = tronWeb.address.fromHex(address);
+            const participantName = names[index]; // Get the name
             const voteCount = parseInt(votes[index], 10); // Parse votes as decimal
 
-            // Debug vote parsing
-            console.log(`Participant ${index + 1}:`, {
-                Address: base58Address,
-                RawVotes: votes[index],
-                ParsedVotes: voteCount,
-            });
-
+            // Append rows to leaderboard
             leaderboardContainer.innerHTML += `
                 <tr>
-                    <td>Participant ${index + 1}</td>
+                    <td>${participantName}</td>
                     <td>${base58Address}</td>
                     <td>${voteCount}</td>
                 </tr>
@@ -529,6 +525,7 @@ async function initializeApp() {
         document.getElementById("message").textContent = `Error loading leaderboard: ${error.message}`;
     }
 }
+
 
 
 
