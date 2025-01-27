@@ -927,38 +927,40 @@
         }
     }
 
-    async function submitVote(e) {
-        e.preventDefault();
+    document.getElementById('voteForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
 
-        const candidateHex = document.getElementById('candidate').value;
-
-        if (!tronWeb || !userAddress) {
-            document.getElementById('message').textContent = "Please connect your wallet first.";
-            return;
-        }
-
-        try {
-            const kingTokenContract = await tronWeb.contract(kingTokenAbi, kingTokenAddress);
-            const allowance = await kingTokenContract.allowance(userAddress, contractAddress).call();
-            console.log("Allowance:", tronWeb.fromSun(allowance));
-
-            if (allowance < tronWeb.toSun(voteCost)) {
-                document.getElementById('message').textContent = "Insufficient allowance. Please approve tokens first.";
-                return;
-            }
-
-            const votingContract = await tronWeb.contract(contractAbi, contractAddress);
-            const transaction = await votingContract.vote(candidateHex).send({
-                shouldPollResponse: true,
-            });
-
-            console.log("Vote successful:", transaction);
-            document.getElementById('message').textContent = "Your vote has been cast successfully.";
-        } catch (error) {
-            console.error("Error during voting:", error);
-            document.getElementById('message').textContent = `Error: ${error.message}`;
-        }
+    const candidate = document.getElementById('candidate').value; // Candidate address
+    if (!tronWeb || !userAddress) {
+        document.getElementById('message').textContent = "Please connect your wallet first.";
+        return;
     }
+
+    try {
+        const contract = await tronWeb.contract(contractAbi, contractAddress);
+        const tokenContract = await tronWeb.contract(tokenAbi, kingTokenAddress);
+
+        // Step 1: Approve the King Token for the voting transaction
+        console.log("Approving tokens...");
+        await tokenContract.approve(contractAddress, tronWeb.toSun(voteCost)).send({
+            shouldPollResponse: true,
+        });
+
+        console.log("Approval successful. Proceeding to vote...");
+
+        // Step 2: Cast the vote
+        const transaction = await contract.vote(candidate).send({
+            shouldPollResponse: true,
+        });
+
+        console.log("Vote successful:", transaction);
+        document.getElementById('message').textContent = "Your vote has been cast successfully.";
+    } catch (error) {
+        console.error("Error during voting", error);
+        document.getElementById('message').textContent = `Error: ${error.message}`;
+    }
+});
+
   </script>
 </body>
 </html>
