@@ -268,13 +268,14 @@
     async function approveTokens(spenderAddress, amount) {
         try {
             const tokenContract = await tronWeb.contract(tokenAbi, tokenAddress);
-            await tokenContract.approve(spenderAddress, amount).send({
-                shouldPollResponse: true,
-            });
-            console.log("Token approval successful");
+
+            // Disable polling to reduce wait time
+            await tokenContract.approve(spenderAddress, amount).send({ shouldPollResponse: false });
+
+            console.log("Token approval transaction sent successfully.");
         } catch (error) {
-            console.error("Token approval failed", error);
-            throw new Error("Approval failed");
+            console.error("Error during token approval:", error);
+            throw new Error("Approval failed. Please try again.");
         }
     }
 
