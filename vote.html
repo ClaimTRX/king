@@ -876,7 +876,7 @@
         if (await checkTronLinkInstalled()) {
             await initializeTronWeb();
             await loadCandidates();
-          await loadLeaderboard();
+            await loadLeaderboard();
         } else {
             document.getElementById('message').textContent = "TronLink is not installed. Please install it to continue.";
         }
@@ -930,68 +930,73 @@
 
    async function loadCandidates() {
     try {
-        // Ensure TronWeb is initialized
-        if (!tronWeb) throw new Error("TronWeb is not initialized. Connect your wallet.");
-
-        // Load the contract
         const contract = await tronWeb.contract(contractAbi, contractAddress);
-
-        // Fetch voter list from the contract
         const [addresses, names] = await contract.getVoterList().call();
 
-        console.log("Addresses fetched from contract:", addresses);
-        console.log("Names fetched from contract:", names);
+        console.log("Voter Addresses:", addresses);
+        console.log("Voter Names:", names);
 
-        // Reference the dropdown element
-        const candidateSelect = document.getElementById('candidate');
-        candidateSelect.innerHTML = ''; // Clear existing options
+        const candidateSelect = document.getElementById("candidate");
+        candidateSelect.innerHTML = "";
 
-        // Ensure the response is valid
-        if (!addresses || !names || addresses.length === 0 || names.length === 0) {
-            document.getElementById('message').textContent = "No candidates found. Ensure registration is complete.";
-            console.error("No candidates found in the contract.");
+        if (addresses.length === 0 || names.length === 0) {
+            document.getElementById("message").textContent = "No registered candidates found.";
             return;
         }
 
-        // Populate the dropdown with candidates
-        for (let i = 0; i < addresses.length; i++) {
-            const base58Address = tronWeb.address.fromHex(addresses[i]); // Convert Hex to Base58
-            const option = document.createElement('option');
-            option.value = addresses[i]; // Candidate address in Hex
-            option.textContent = `${names[i]} (${base58Address})`;
+        addresses.forEach((address, index) => {
+            const base58Address = tronWeb.address.fromHex(address);
+            const option = document.createElement("option");
+            option.value = address;
+            option.textContent = `${names[index]} (${base58Address})`;
             candidateSelect.appendChild(option);
-        }
+        });
 
-        document.getElementById('message').textContent = "Candidates loaded successfully.";
+        document.getElementById("message").textContent = "Candidates loaded successfully.";
     } catch (error) {
         console.error("Error loading candidates:", error);
-        document.getElementById('message').textContent = `Error loading candidates: ${error.message}`;
+        document.getElementById("message").textContent = `Error loading candidates: ${error.message}`;
     }
 }
 
 
-    async function loadLeaderboard() {
-        try {
-            const contract = await tronWeb.contract(contractAbi, contractAddress);
-            const [addresses, votes] = await contract.getLeaderboard().call();
-            const leaderboard = document.getElementById('leaderboard');
 
-            leaderboard.innerHTML = '';
-            for (let i = 0; i < addresses.length; i++) {
-                const base58Address = tronWeb.address.fromHex(addresses[i]);
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${addresses[i]}</td>
-                    <td>${base58Address}</td>
-                    <td>${votes[i]}</td>
-                `;
-                leaderboard.appendChild(row);
-            }
-        } catch (error) {
-            console.error("Error loading leaderboard:", error);
-            document.getElementById('message').textContent = "Error loading leaderboard.";
+    async function loadLeaderboard() {
+    try {
+        const contract = await tronWeb.contract(contractAbi, contractAddress);
+        const [addresses, votes] = await contract.getLeaderboard().call();
+
+        const leaderboardContainer = document.getElementById("leaderboard");
+        leaderboardContainer.innerHTML = `
+            <tr>
+                <th>Participant Name</th>
+                <th>Wallet Address</th>
+                <th>Total Votes</th>
+            </tr>
+        `;
+
+        if (addresses.length === 0) {
+            leaderboardContainer.innerHTML += `<tr><td colspan="3">No participants found.</td></tr>`;
+            return;
         }
+
+        addresses.forEach((address, index) => {
+            const base58Address = tronWeb.address.fromHex(address);
+            leaderboardContainer.innerHTML += `
+                <tr>
+                    <td>${base58Address}</td>
+                    <td>${votes[index]}</td>
+                </tr>
+            `;
+        });
+
+        document.getElementById("message").textContent = "Leaderboard loaded successfully.";
+    } catch (error) {
+        console.error("Error loading leaderboard:", error);
+        document.getElementById("message").textContent = `Error loading leaderboard: ${error.message}`;
     }
+}
+
 
     
 
