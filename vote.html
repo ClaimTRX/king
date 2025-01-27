@@ -425,31 +425,27 @@ async function loadCandidates() {
 
 
      document.getElementById("voteForm").addEventListener("submit", async (event) => {
-        event.preventDefault();
-        const candidateAddress = document.getElementById("candidate").value;
+    event.preventDefault();
+    const candidateAddress = document.getElementById("candidate").value;
 
-        try {
-            const approveAmount = tronWeb.toSun(10); // Replace with required token amount
+    try {
+        const approveAmount = tronWeb.toSun(10); // Replace with required token amount
 
-            // Trigger approval and voting in parallel
-            const [approveTx, voteTx] = await Promise.all([
-                approveTokens(contractAddress, approveAmount),
-                (async () => {
-                    const contract = await tronWeb.contract(contractAbi, contractAddress);
-                    return await contract.voteForKing(candidateAddress).send({ shouldPollResponse: true });
-                })(),
-            ]);
+        // Step 1: Approve Tokens
+        await approveTokens(contractAddress, approveAmount);
 
-            console.log("Approval Transaction:", approveTx);
-            console.log("Voting Transaction:", voteTx);
+        // Step 2: Cast Vote
+        const contract = await tronWeb.contract(contractAbi, contractAddress);
+        await contract.voteForKing(candidateAddress).send({ shouldPollResponse: true });
 
-            document.getElementById("voteMessage").textContent = "Your vote has been cast successfully!";
-            await loadLeaderboard(); // Reload leaderboard
-        } catch (error) {
-            console.error("Error casting vote:", error);
-            document.getElementById("voteMessage").textContent = `Error: ${error.message}`;
-        }
-    });
+        document.getElementById("voteMessage").textContent = "Your vote has been cast successfully!";
+        await loadLeaderboard(); // Reload leaderboard
+    } catch (error) {
+        console.error("Error casting vote:", error);
+        document.getElementById("voteMessage").textContent = `Error: ${error.message}`;
+    }
+});
+
   </script>
 </body>
 </html>
