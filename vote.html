@@ -129,13 +129,14 @@
   </style>
 </head>
 <body>
-  <div class="button">
-    <button type="button" id="connectWallet">Connect Wallet</button>
-  </div>
+  
 
   <div class="container">
-    <<div class="form-container">
+    <div class="form-container">
     <h2>Vote for a King</h2>
+      <div class="button">
+    <button type="button" id="connectWallet">Connect Wallet</button>
+  </div>
     <div id="timer" style="font-size: 1.2rem; color: #ffd700; margin-bottom: 10px;">Time Remaining: Loading...</div>
     <form id="voteForm">
         <label for="candidate">Select Candidate</label>
@@ -211,10 +212,18 @@
     ];
 
     document.addEventListener("DOMContentLoaded", async () => {
+    const connectButton = document.getElementById("connectWallet");
+
+    // Add click event for Connect Wallet button
+    connectButton.addEventListener("click", connectWallet);
+
     if (await checkTronLinkInstalled()) {
         await initializeTronWeb();
         await loadCandidates();
         await loadLeaderboard();
+
+        // Hide the Connect Wallet button if already connected
+        connectButton.style.display = "none";
 
         // Start the timer
         updateTimer();
@@ -225,28 +234,44 @@
     }
 });
 
-
-    async function checkTronLinkInstalled() {
-      return new Promise(resolve => {
+async function checkTronLinkInstalled() {
+    return new Promise((resolve) => {
         const interval = setInterval(() => {
-          if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
-            clearInterval(interval);
-            resolve(true);
-          }
+            if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
+                clearInterval(interval);
+                resolve(true);
+            }
         }, 1000);
-      });
+    });
+}
+
+async function initializeTronWeb() {
+    tronWeb = window.tronWeb;
+    userAddress = tronWeb.defaultAddress.base58;
+
+    console.log("Connected to TronLink.");
+    document.getElementById("voteMessage").textContent = `Connected: ${userAddress}`;
+
+    // Hide the Connect Wallet button after connection
+    const connectButton = document.getElementById("connectWallet");
+    connectButton.style.display = "none";
+}
+
+async function connectWallet() {
+    try {
+        await tronLink.request({ method: "tron_requestAccounts" }); // Request wallet connection
+        await initializeTronWeb(); // Initialize TronWeb after connection
+
+        // Hide the Connect Wallet button after successful connection
+        const connectButton = document.getElementById("connectWallet");
+        connectButton.style.display = "none";
+    } catch (error) {
+        console.error("Failed to connect to TronLink:", error);
     }
+}
 
-    async function initializeTronWeb() {
-      tronWeb = window.tronWeb;
-      userAddress = tronWeb.defaultAddress.base58;
-
-      console.log("Connected to TronLink.");
-      document.getElementById("connectWallet").textContent = `Connected: ${userAddress}`;
-    }
-
-    async function loadCandidates() {
-      try {
+async function loadCandidates() {
+    try {
         const contract = await tronWeb.contract(contractAbi, contractAddress);
         const [addresses, names] = await contract.getCandidateList().call();
 
@@ -254,24 +279,25 @@
         candidateSelect.innerHTML = ""; // Clear existing options
 
         if (names.length === 0) {
-          candidateSelect.innerHTML = `<option disabled>No candidates available</option>`;
-          document.getElementById("voteMessage").textContent = "No Kings registered yet.";
-          return;
+            candidateSelect.innerHTML = `<option disabled>No candidates available</option>`;
+            document.getElementById("voteMessage").textContent = "No Kings registered yet.";
+            return;
         }
 
         names.forEach((name, index) => {
-          const option = document.createElement("option");
-          option.value = addresses[index];
-          option.textContent = name;
-          candidateSelect.appendChild(option);
+            const option = document.createElement("option");
+            option.value = addresses[index];
+            option.textContent = name;
+            candidateSelect.appendChild(option);
         });
 
         document.getElementById("voteMessage").textContent = "Candidates loaded successfully.";
-      } catch (error) {
+    } catch (error) {
         console.error("Error loading candidates:", error);
         document.getElementById("voteMessage").textContent = `Error: ${error.message}`;
-      }
     }
+}
+
 
     async function loadLeaderboard() {
     try {
