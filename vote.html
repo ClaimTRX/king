@@ -89,44 +89,36 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="form-container">
-       <div class="button">
+  <div class="button">
                 <button type="button" id="connectWallet">Connect Wallet</button>
             </div>
+  <div class="container">
+    <div class="form-container">
+    <h2>Vote for a King</h2>
+    <form id="voteForm">
+        <label for="candidate">Select Candidate</label>
+        <select id="candidate" name="candidate" required>
+            <!-- Dynamically populated -->
+        </select>
+        <div class="button">
+            <button type="submit">Vote</button>
+        </div>
+    </form>
+    <div id="voteMessage"></div>
+</div>
 
-        <h2>Vote</h2>
-        <form id="voteForm">
-            <label for="candidate">Select Candidate</label>
-            <select id="candidate" name="candidate" required>
-                <!-- Dynamically populated with registered candidates -->
-            </select>
-
-           
-            <label for="wallet">Your Wallet Address</label>
-            <input type="text" id="wallet" name="wallet" placeholder="Wallet address will appear here" readonly required>
-
-           
-
-            <div class="button">
-                <button type="submit">Vote</button>
-            </div>
-        </form>
-        <div class="message" id="message"></div>
-    </div>
- <div class="leaderboard-container">
-        <h2>Leaderboard</h2>
-        <table class="leaderboard">
+ <table class="leaderboard">
     <thead>
         <tr>
-            <th>Participant Name</th>
+            <th>King Name</th>
             <th>Total Votes</th>
         </tr>
     </thead>
     <tbody id="leaderboard">
-        <!-- Dynamically populated with leaderboard data -->
+        <!-- Dynamically populated -->
     </tbody>
 </table>
+
 
     </div>
   </div>
@@ -135,7 +127,7 @@
   <script src="https://cdn.jsdelivr.net/npm/tronweb/dist/TronWeb.min.js"></script>
   <script>
     let tronWeb, userAddress;
-    const contractAddress = "TNn4J4MQW87ZmW6cC2oXFvmC2wXRvAZf2z";
+    const contractAddress = "THQ8J9hjXjGm7pfqtwmTvbzrku2TDBTauk";
     const kingTokenAddress = "TAME19SjDjKxC3omaJG5HWMTxhbHMrzWMi";
     const voteCost = 50; // Set this to the cost in King Tokens (adjust as needed)
     const maxUint256 = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
@@ -374,22 +366,15 @@
 
 
     document.addEventListener("DOMContentLoaded", async () => {
-    // Ensure the vote form's submit event is properly attached
-    const voteForm = document.getElementById("voteForm");
-    if (voteForm) {
-        voteForm.addEventListener("submit", submitVote);
+    if (await checkTronLinkInstalled()) {
+        await initializeTronWeb();
+        await loadCandidates();
+        await loadLeaderboard();
     } else {
-        console.error("Vote form not found in the DOM.");
-    }
-
-    try {
-        // Initialize the app after DOM content is loaded
-        await initializeApp();
-    } catch (error) {
-        console.error("Initialization error:", error);
-        document.getElementById("message").textContent = `Error initializing app: ${error.message}`;
+        document.getElementById("voteMessage").textContent = "TronLink is not installed. Please install it to continue.";
     }
 });
+
 
 async function initializeApp() {
     if (await checkTronLinkInstalled()) {
@@ -448,34 +433,31 @@ async function initializeApp() {
    async function loadCandidates() {
     try {
         const contract = await tronWeb.contract(contractAbi, contractAddress);
-        const [addresses, names] = await contract.getVoterList().call();
-
-        console.log("Voter Addresses:", addresses);
-        console.log("Voter Names:", names);
+        const [addresses, names] = await contract.getCandidateList().call();
 
         const candidateSelect = document.getElementById("candidate");
-        candidateSelect.innerHTML = ""; // Clear previous options
+        candidateSelect.innerHTML = ""; // Clear existing options
 
-        if (addresses.length === 0 || names.length === 0) {
-            console.warn("No registered candidates found.");
-            document.getElementById("message").textContent = "No registered candidates found.";
+        if (names.length === 0) {
+            candidateSelect.innerHTML = `<option disabled>No candidates available</option>`;
+            document.getElementById("voteMessage").textContent = "No Kings registered yet.";
             return;
         }
 
-        addresses.forEach((address, index) => {
-            const base58Address = tronWeb.address.fromHex(address); // Convert Hex to Base58
+        names.forEach((name, index) => {
             const option = document.createElement("option");
-            option.value = address;
-            option.textContent = `${names[index]} (${base58Address})`;
+            option.value = addresses[index];
+            option.textContent = name;
             candidateSelect.appendChild(option);
         });
 
-        document.getElementById("message").textContent = "Candidates loaded successfully.";
+        document.getElementById("voteMessage").textContent = "Candidates loaded successfully.";
     } catch (error) {
         console.error("Error loading candidates:", error);
-        document.getElementById("message").textContent = `Error loading candidates: ${error.message}`;
+        document.getElementById("voteMessage").textContent = `Error: ${error.message}`;
     }
 }
+
 
 
 
@@ -486,39 +468,30 @@ async function initializeApp() {
         const [addresses, names, votes] = await contract.getLeaderboard().call();
 
         const leaderboardContainer = document.getElementById("leaderboard");
+        leaderboardContainer.innerHTML = ""; // Clear existing rows
 
-        // Clear existing rows (keep headers intact)
-        leaderboardContainer.innerHTML = "";
-
-        // Handle empty leaderboard
-        if (!names || !votes || names.length === 0) {
-            leaderboardContainer.innerHTML = `<tr><td colspan="2">No participants have been registered yet.</td></tr>`;
-            document.getElementById("message").textContent = "Leaderboard is currently empty.";
+        if (names.length === 0) {
+            leaderboardContainer.innerHTML = `<tr><td colspan="2">No Kings registered yet.</td></tr>`;
+            document.getElementById("voteMessage").textContent = "Leaderboard is currently empty.";
             return;
         }
 
-        // Ensure the lengths of names and votes match
-        if (names.length !== votes.length) {
-            console.error("Mismatch in leaderboard data:", { names, votes });
-            document.getElementById("message").textContent = "Error: Mismatch in leaderboard data.";
-            return;
-        }
-
-        // Debugging logs
-        console.log("Voter Names:", names);
-        console.log("Votes:", votes);
-
-        // Populate the leaderboard
         names.forEach((name, index) => {
-            const voteCount = parseInt(votes[index], 10); // Parse votes as decimal
-
             leaderboardContainer.innerHTML += `
                 <tr>
                     <td>${name}</td>
-                    <td>${voteCount}</td>
+                    <td>${votes[index]}</td>
                 </tr>
             `;
         });
+
+        document.getElementById("voteMessage").textContent = "Leaderboard loaded successfully.";
+    } catch (error) {
+        console.error("Error loading leaderboard:", error);
+        document.getElementById("voteMessage").textContent = `Error: ${error.message}`;
+    }
+}
+
 
         document.getElementById("message").textContent = "Leaderboard loaded successfully.";
     } catch (error) {
@@ -526,53 +499,24 @@ async function initializeApp() {
         document.getElementById("message").textContent = `Error loading leaderboard: ${error.message}`;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
     
 
-  async function submitVote(event) {
+  document.getElementById("voteForm").addEventListener("submit", async (event) => {
     event.preventDefault();
-    console.log("Vote button clicked!");
-
-    const candidate = document.getElementById("candidate").value;
-    if (!tronWeb || !userAddress) {
-        document.getElementById("message").textContent = "Please connect your wallet first.";
-        console.log("Wallet not connected.");
-        return;
-    }
-
-    if (!tronWeb.isAddress(candidate)) {
-        document.getElementById("message").textContent = "Please select a valid candidate.";
-        console.log("Invalid candidate address.");
-        return;
-    }
+    const candidateAddress = document.getElementById("candidate").value;
 
     try {
-        console.log("Preparing to call vote function...");
         const contract = await tronWeb.contract(contractAbi, contractAddress);
-
-        // Call the vote function in the smart contract
-        console.log("Sending transaction to vote for:", candidate);
-        const transaction = await contract.vote(candidate).send();
+        const transaction = await contract.voteForKing(candidateAddress).send();
         console.log("Vote successful:", transaction);
-
-        document.getElementById("message").textContent = "Your vote has been cast successfully.";
-        await loadLeaderboard();
+        document.getElementById("voteMessage").textContent = "Your vote has been cast successfully!";
+        await loadLeaderboard(); // Reload the leaderboard
     } catch (error) {
-        console.error("Error during voting:", error);
-        document.getElementById("message").textContent = `Error: ${error.message}`;
+        console.error("Error voting for King:", error);
+        document.getElementById("voteMessage").textContent = `Error: ${error.message}`;
     }
-}
+});
+
 
 
 
