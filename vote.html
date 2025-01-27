@@ -807,18 +807,48 @@
 
      let tronWeb, userAddress;
 
+   document.addEventListener('DOMContentLoaded', async () => {
+        document.getElementById('connectWallet').addEventListener('click', connectWallet);
+        document.getElementById('approveButton').addEventListener('click', approveTokens);
+        document.getElementById('voteForm').addEventListener('submit', submitVote);
+
+        if (await checkTronLinkInstalled()) {
+            await initializeTronWeb();
+            await loadCandidates();
+        } else {
+            console.error('TronLink is not installed.');
+        }
+    });
+
+    async function checkTronLinkInstalled() {
+        return new Promise(resolve => {
+            const interval = setInterval(() => {
+                if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
+                    clearInterval(interval);
+                    resolve(true);
+                }
+            }, 1000);
+        });
+    }
+
     async function connectWallet() {
         try {
             await tronLink.request({ method: 'tron_requestAccounts' });
-            tronWeb = window.tronWeb;
-            userAddress = tronWeb.defaultAddress.base58;
-            document.getElementById('wallet').value = userAddress;
-            document.getElementById('message').textContent = "Wallet connected.";
+            await initializeTronWeb();
         } catch (error) {
-            console.error("Error connecting wallet:", error);
-            document.getElementById('message').textContent = "Failed to connect wallet.";
+            console.error('Failed to connect to TronLink:', error);
         }
     }
+
+    async function initializeTronWeb() {
+        tronWeb = window.tronWeb;
+        userAddress = tronWeb.defaultAddress.base58;
+
+        console.log('Connected to TronLink.');
+        document.getElementById('wallet').value = userAddress;
+        document.getElementById('message').textContent = "Wallet connected successfully.";
+    }
+
 
     async function loadCandidates() {
         try {
