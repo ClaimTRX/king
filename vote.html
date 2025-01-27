@@ -86,6 +86,46 @@
             font-size: 0.9rem;
             color: #c5c5c5;
         }
+
+     table.leaderboard {
+        width: 100%;
+        max-width: 600px;
+        margin: 20px auto;
+        border-collapse: collapse;
+        text-align: left;
+        background: #1a1c22;
+        color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+    }
+
+    table.leaderboard th,
+    table.leaderboard td {
+        padding: 12px;
+        border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    table.leaderboard th {
+        background: rgba(255, 215, 0, 0.8);
+        color: black;
+        text-transform: uppercase;
+        font-size: 1rem;
+    }
+
+    table.leaderboard tr:nth-child(even) {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    table.leaderboard tr:hover {
+        background: rgba(255, 215, 0, 0.2);
+        transition: background-color 0.3s ease;
+    }
+
+    .leaderboard-container {
+        margin-top: 20px;
+        text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -234,7 +274,7 @@
     }
 
     async function loadLeaderboard() {
-      try {
+    try {
         const contract = await tronWeb.contract(contractAbi, contractAddress);
         const [addresses, names, votes] = await contract.getLeaderboard().call();
 
@@ -242,26 +282,37 @@
         leaderboardContainer.innerHTML = ""; // Clear existing rows
 
         if (names.length === 0) {
-          leaderboardContainer.innerHTML = `<tr><td colspan="2">No Kings registered yet.</td></tr>`;
-          document.getElementById("voteMessage").textContent = "Leaderboard is currently empty.";
-          return;
+            leaderboardContainer.innerHTML = `<tr><td colspan="2">No Kings registered yet.</td></tr>`;
+            document.getElementById("voteMessage").textContent = "Leaderboard is currently empty.";
+            return;
         }
 
-        names.forEach((name, index) => {
-          leaderboardContainer.innerHTML += `
-            <tr>
-              <td>${name}</td>
-              <td>${votes[index]}</td>
-            </tr>
-          `;
+        // Combine data into an array of objects for sorting
+        const leaderboardData = names.map((name, index) => ({
+            name,
+            votes: parseInt(votes[index]),
+        }));
+
+        // Sort by votes in descending order
+        leaderboardData.sort((a, b) => b.votes - a.votes);
+
+        // Populate the leaderboard
+        leaderboardData.forEach((entry) => {
+            leaderboardContainer.innerHTML += `
+                <tr>
+                    <td>${entry.name}</td>
+                    <td>${entry.votes}</td>
+                </tr>
+            `;
         });
 
         document.getElementById("voteMessage").textContent = "Leaderboard loaded successfully.";
-      } catch (error) {
+    } catch (error) {
         console.error("Error loading leaderboard:", error);
         document.getElementById("voteMessage").textContent = `Error: ${error.message}`;
-      }
     }
+}
+
 
     async function updateTimer() {
     try {
