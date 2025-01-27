@@ -199,7 +199,8 @@
   <script src="https://cdn.jsdelivr.net/npm/tronweb/dist/TronWeb.min.js"></script>
   <script>
     let tronWeb, userAddress;
-    const contractAddress = "TL8GEzSKj3vgoQo5huQJ5NmTDr2osVVXwR";
+    const contractAddress = "TLbjDjj6GSQwCvx8T54o2BJCDfN6YRhtQe";
+    const tokenAddress = "TAME19SjDjKxC3omaJG5HWMTxhbHMrzWMi";
     const contractAbi = [
       {
         "inputs": [],
@@ -240,6 +241,21 @@
         "stateMutability": "nonpayable",
         "type": "function"
       }
+    ];
+
+    const tokenAbi = [
+        {
+            "constant": false,
+            "inputs": [
+                { "name": "_spender", "type": "address" },
+                { "name": "_value", "type": "uint256" }
+            ],
+            "name": "approve",
+            "outputs": [{ "name": "", "type": "bool" }],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }
     ];
 
     document.addEventListener("DOMContentLoaded", async () => {
@@ -300,6 +316,17 @@ async function connectWallet() {
         console.error("Failed to connect to TronLink:", error);
     }
 }
+
+    async function approveTokens(spenderAddress, amount) {
+        try {
+            const tokenContract = await tronWeb.contract(tokenAbi, tokenAddress);
+            await tokenContract.approve(spenderAddress, amount).send({ shouldPollResponse: true });
+            console.log("Token approval successful.");
+        } catch (error) {
+            console.error("Error during token approval:", error);
+            throw new Error("Approval failed. Please try again.");
+        }
+    }
 
 async function loadCandidates() {
     try {
@@ -395,18 +422,24 @@ async function loadCandidates() {
 
 
     document.getElementById("voteForm").addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const candidateAddress = document.getElementById("candidate").value;
+        event.preventDefault();
+        const candidateAddress = document.getElementById("candidate").value;
 
-      try {
-        const contract = await tronWeb.contract(contractAbi, contractAddress);
-        await contract.voteForKing(candidateAddress).send();
-        document.getElementById("voteMessage").textContent = "Your vote has been cast successfully!";
-        await loadLeaderboard(); // Reload leaderboard after voting
-      } catch (error) {
-        console.error("Error casting vote:", error);
-        document.getElementById("voteMessage").textContent = `Error: ${error.message}`;
-      }
+        try {
+            // Approve tokens first
+            const approveAmount = tronWeb.toSun(10); // Replace with required token amount
+            await approveTokens(contractAddress, approveAmount);
+
+            // Cast the vote
+            const contract = await tronWeb.contract(contractAbi, contractAddress);
+            await contract.voteForKing(candidateAddress).send({ shouldPollResponse: true });
+
+            document.getElementById("voteMessage").textContent = "Your vote has been cast successfully!";
+            await loadLeaderboard(); // Reload leaderboard
+        } catch (error) {
+            console.error("Error casting vote:", error);
+            document.getElementById("voteMessage").textContent = `Error: ${error.message}`;
+        }
     });
   </script>
 </body>
