@@ -353,26 +353,30 @@ async function connectWallet() {
   async function checkIfUserHasVoted() {
     try {
         const contract = await tronWeb.contract(contractAbi, contractAddress);
-        const hasVoted = await contract.getVoter(userAddress).call();
+        const hasVoted = await contract.getVoter(userAddress).call(); // Fetch voting status from the contract
 
         console.log("User address:", userAddress);
         console.log("Has voted (from contract):", hasVoted);
 
+        // Find the vote button
         const voteButton = document.querySelector("#voteForm button[type='submit']");
 
-        // If user has voted, disable the button
+        // Update the button's state based on the `hasVoted` value
         if (hasVoted === true) {
-            voteButton.disabled = true;
-            voteButton.textContent = "You have already voted";
+            voteButton.disabled = true; // Disable the button
+            voteButton.textContent = "You have already voted"; // Update button text
         } else {
-            voteButton.disabled = false;
+            voteButton.disabled = false; // Enable the button
             voteButton.textContent = "Vote"; // Reset button text
         }
+
+        console.log("Vote button state updated:", voteButton.disabled);
     } catch (error) {
         console.error("Error checking vote status:", error.message);
         document.getElementById("voteMessage").textContent = "Error fetching vote status. Please try again.";
     }
 }
+
 
 
 
@@ -476,27 +480,28 @@ async function loadCandidates() {
     const candidateAddress = document.getElementById("candidate").value;
 
     try {
-        const approveAmount = tronWeb.toSun(10); // Replace with required token amount
+        const approveAmount = tronWeb.toSun(10); // Replace with the required token amount
 
         // Step 1: Approve Tokens
         await approveTokens(contractAddress, approveAmount);
 
-        // Step 2: Cast Vote
+        // Step 2: Cast the vote
         const contract = await tronWeb.contract(contractAbi, contractAddress);
         await contract.voteForKing(candidateAddress).send({ shouldPollResponse: true });
 
         document.getElementById("voteMessage").textContent = "Your vote has been cast successfully!";
 
-        // Step 3: Recheck if the user has voted and disable the button
+        // Step 3: Recheck the voting status
         await checkIfUserHasVoted();
 
-        // Step 4: Reload leaderboard to reflect new votes
+        // Step 4: Reload the leaderboard to reflect new votes
         await loadLeaderboard();
     } catch (error) {
-        console.error("Error casting vote:", error);
+        console.error("Error casting vote:", error.message);
         document.getElementById("voteMessage").textContent = `Error: ${error.message}`;
     }
 });
+;
 
 
 
