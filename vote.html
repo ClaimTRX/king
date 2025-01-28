@@ -174,6 +174,7 @@
         <a href="register.html" class="btn-link">Register</a>
         <a href="vote.html" class="btn-link">Vote</a>
     </div>
+       <div>
     <h2>Vote for a King</h2>
       <div class="button">
     <button type="button" id="connectWallet">Connect Wallet</button>
@@ -191,6 +192,7 @@
     </form>
     <div id="voteMessage"></div>
 </div>
+       </div>
 
 
     <table class="leaderboard">
@@ -342,9 +344,10 @@ async function connectWallet() {
   async function checkIfUserHasVoted() {
     try {
         const contract = await tronWeb.contract(contractAbi, contractAddress);
-        const hasVoted = await contract.voters(userAddress).call();
+        const voterData = await contract.voters(userAddress).call();
 
-        if (hasVoted) {
+        // Check the hasVoted flag from the smart contract
+        if (voterData.hasVoted) {
             const voteButton = document.querySelector("#voteForm button[type='submit']");
             voteButton.disabled = true; // Disable the button
             voteButton.textContent = "You have already voted"; // Update button text
@@ -463,12 +466,18 @@ async function loadCandidates() {
         await contract.voteForKing(candidateAddress).send({ shouldPollResponse: true });
 
         document.getElementById("voteMessage").textContent = "Your vote has been cast successfully!";
-        await loadLeaderboard(); // Reload leaderboard
+
+        // Step 3: Recheck if the user has voted and disable the button
+        await checkIfUserHasVoted();
+
+        // Step 4: Reload leaderboard to reflect new votes
+        await loadLeaderboard();
     } catch (error) {
         console.error("Error casting vote:", error);
         document.getElementById("voteMessage").textContent = `Error: ${error.message}`;
     }
 });
+
 
   </script>
 </body>
