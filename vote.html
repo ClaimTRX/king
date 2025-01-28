@@ -290,7 +290,6 @@
         await loadCandidates();
         await loadLeaderboard();
 
-        // Run only after DOM is ready and user address is set
         if (userAddress) {
             await checkIfUserHasVoted();
         }
@@ -303,6 +302,7 @@
             "TronLink is not installed. Please install it to continue.";
     }
 });
+
 
 
 async function checkTronLinkInstalled() {
@@ -365,7 +365,6 @@ async function connectWallet() {
 
         // Select the vote button
         const voteButton = document.querySelector("#voteForm button[type='submit']");
-
         if (!voteButton) {
             console.error("Vote button not found in the DOM.");
             return;
@@ -373,21 +372,22 @@ async function connectWallet() {
 
         // Update button state explicitly
         if (hasVoted === true) {
-            voteButton.setAttribute("disabled", "disabled"); // Explicitly set the disabled attribute
-            voteButton.textContent = "You have already voted"; // Update button text
+            voteButton.disabled = true;
+            voteButton.setAttribute("disabled", "true");
+            voteButton.textContent = "You have already voted";
         } else {
-            voteButton.removeAttribute("disabled"); // Remove the disabled attribute
-            voteButton.textContent = "Vote"; // Reset button text
+            voteButton.disabled = false;
+            voteButton.removeAttribute("disabled");
+            voteButton.textContent = "Vote";
         }
 
-        console.log("Vote button state updated:", voteButton.disabled); // Log the button state
-      console.log("Final vote button disabled state:", voteButton.disabled);
-
+        console.log("Vote button state updated:", voteButton.disabled);
     } catch (error) {
         console.error("Error checking vote status:", error.message);
         document.getElementById("voteMessage").textContent = "Error fetching vote status. Please try again.";
     }
 }
+
 
 
 
