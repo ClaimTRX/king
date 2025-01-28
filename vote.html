@@ -289,7 +289,11 @@
         await initializeTronWeb();
         await loadCandidates();
         await loadLeaderboard();
-        await checkIfUserHasVoted(); // Check if user has already voted
+
+        // Run only after DOM is ready and user address is set
+        if (userAddress) {
+            await checkIfUserHasVoted();
+        }
 
         connectButton.style.display = "none";
         updateTimer();
@@ -299,6 +303,7 @@
             "TronLink is not installed. Please install it to continue.";
     }
 });
+
 
 async function checkTronLinkInstalled() {
     return new Promise((resolve) => {
