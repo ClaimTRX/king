@@ -212,11 +212,26 @@
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
+        },
+      {
+            "constant": true,
+            "inputs": [
+                { "internalType": "uint256", "name": "roundId", "type": "uint256" },
+                { "internalType": "address", "name": "candidate", "type": "address" }
+            ],
+            "name": "hasRegisteredInRound",
+            "outputs": [{ "name": "", "type": "bool" }],
+            "stateMutability": "view",
+            "type": "function"
         }
     ];
 
+    const roundId = 1; // Update with the current round ID as needed
+
     document.addEventListener('DOMContentLoaded', async () => {
         const connectButton = document.getElementById('connectWallet');
+        const registerButton = document.querySelector('#registerForm button[type="submit"]');
+
         connectButton.addEventListener('click', connectWallet);
 
         if (await checkTronLinkInstalled()) {
@@ -224,6 +239,13 @@
 
             // Hide connect button if already connected
             connectButton.style.display = "none";
+
+            // Check if the wallet is already registered
+            const isRegistered = await checkIfRegistered(userAddress);
+            if (isRegistered) {
+                registerButton.disabled = true;
+                document.getElementById('message').textContent = "You are already registered for this round.";
+            }
         } else {
             console.error('TronLink is not installed.');
             document.getElementById('message').textContent = "TronLink is not installed. Please install it.";
@@ -240,6 +262,7 @@
             }, 1000);
         });
     }
+    
 
     async function connectWallet() {
         try {
@@ -264,6 +287,17 @@
             document.getElementById('message').textContent = "Wallet connected successfully.";
         } catch (error) {
             console.error("TronWeb initialization failed", error);
+        }
+    }
+
+  async function checkIfRegistered(walletAddress) {
+        try {
+            const contract = await tronWeb.contract(contractAbi, contractAddress);
+            const isRegistered = await contract.hasRegisteredInRound(roundId, walletAddress).call();
+            return isRegistered;
+        } catch (error) {
+            console.error("Error checking registration status:", error);
+            return false;
         }
     }
 
@@ -302,6 +336,9 @@
 
         console.log("Registration successful:", transaction);
         document.getElementById('message').textContent = `Thank you, ${name}! You have been registered successfully.`;
+
+        // Disable the register button after successful registration
+        document.querySelector('#registerForm button[type="submit"]').disabled = true;
     } catch (error) {
         console.error("Error during registration:", error);
         document.getElementById('message').textContent = `Error: ${error.message}`;
