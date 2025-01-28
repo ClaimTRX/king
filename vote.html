@@ -358,10 +358,15 @@ async function connectWallet() {
         console.log("User address:", userAddress);
         console.log("Has voted (from contract):", hasVoted);
 
-        if (hasVoted) {
+        // Explicitly check if hasVoted is true
+        if (hasVoted === true) {
             const voteButton = document.querySelector("#voteForm button[type='submit']");
             voteButton.disabled = true;
             voteButton.textContent = "You have already voted";
+        } else {
+            const voteButton = document.querySelector("#voteForm button[type='submit']");
+            voteButton.disabled = false;
+            voteButton.textContent = "Vote"; // Reset button text
         }
     } catch (error) {
         console.error("Error checking vote status:", error.message);
