@@ -189,6 +189,8 @@
             <button type="submit">Vote</button>
         </div>
       <p>The current price for each vote is 2,000 KING</p>
+      <div id="voteMessage" style="margin-top: 10px; font-size: 1rem;"></div>
+
     </form>
     <div id="voteMessage"></div>
 </div>
@@ -335,6 +337,10 @@ async function connectWallet() {
 
         // Hide the Connect Wallet button after successful connection
         const connectButton = document.getElementById("connectWallet");
+      if (userAddress) {
+    await checkIfUserHasVoted(); // Check if the user has voted after wallet connection
+}
+
         connectButton.style.display = "none";
     } catch (error) {
         console.error("Failed to connect to TronLink:", error);
@@ -360,33 +366,27 @@ async function connectWallet() {
         const contract = await tronWeb.contract(contractAbi, contractAddress);
         const hasVoted = await contract.getVoter(userAddress).call(); // Fetch voting status
 
-        console.log("Has voted:", hasVoted); // Debugging log
-
         const voteMessage = document.getElementById("voteMessage");
+        const voteButton = document.querySelector("#voteForm button[type='submit']");
 
         if (hasVoted) {
-            // If the user has already voted, display the message
-            voteMessage.textContent = "You have already voted";
-            voteMessage.style.color = "#ffd700"; // Optional styling
+            // User has already voted
+            voteMessage.innerHTML = `<span style="color: #ffd700; font-weight: bold;">You have already voted in this round.</span>`;
+            voteButton.disabled = true; // Disable the vote button
+            voteButton.style.background = "#555"; // Update button style
+            voteButton.style.cursor = "not-allowed";
         } else {
-            // If the user hasn't voted, reset the message
-            voteMessage.textContent = "";
+            // User has not voted
+            voteMessage.innerHTML = `<span style="color: #00ff00;">You can cast your vote!</span>`;
+            voteButton.disabled = false; // Enable the vote button
+            voteButton.style.background = "linear-gradient(135deg, #ffd700, #d4af37)";
+            voteButton.style.cursor = "pointer";
         }
     } catch (error) {
         console.error("Error checking vote status:", error.message);
         document.getElementById("voteMessage").textContent = "Error fetching vote status. Please try again.";
     }
 }
-
-
-
-
-
-
-
-
-
-
 
 
 async function loadCandidates() {
