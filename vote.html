@@ -365,6 +365,7 @@ async function connectWallet() {
     try {
         const contract = await tronWeb.contract(contractAbi, contractAddress);
         const hasVoted = await contract.getVoter(userAddress).call(); // Fetch voting status
+        console.log("Has Voted:", hasVoted); // Debugging log
 
         const voteMessage = document.getElementById("voteMessage");
         const voteButton = document.querySelector("#voteForm button[type='submit']");
@@ -387,6 +388,7 @@ async function connectWallet() {
         document.getElementById("voteMessage").textContent = "Error fetching vote status. Please try again.";
     }
 }
+
 
 
 async function loadCandidates() {
