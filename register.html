@@ -37,32 +37,40 @@
             box-sizing: border-box;
         }
     
-    .button-group {
-        display: flex;
-        justify-content: center; /* Center the buttons horizontally */
-        gap: 15px; /* Add spacing between buttons */
-        margin-bottom: 20px; /* Add space below the group */
-    }
+    .button-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px; /* Space between rows */
+}
 
-    .btn-link {
-        display: inline-block;
-        text-decoration: none;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 5px;
-        background: linear-gradient(135deg, #ffd700, #d4af37);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        font-size: 1rem;
-        font-weight: bold;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        margin: 5px;
-    }
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Space between buttons */
+    flex-basis: 100%; /* Each group takes full width */
+}
 
-    .btn-link:hover {
-        transform: scale(1.05);
-        background: linear-gradient(135deg, #d4af37, #ffd700);
-    }
+.btn-link {
+    flex: 1; /* Buttons grow equally */
+    max-width: 200px; /* Maximum size for buttons */
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background: linear-gradient(135deg, #ffd700, #d4af37);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-link:hover {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #d4af37, #ffd700);
+}
         h2 {
             color: rgba(255, 215, 0, 1);
         }
@@ -158,11 +166,12 @@
   
     <div class="container">
     <div class="form-container">
-      <div class="button-group">
-    <a href="index.html" class="btn-link">Home</a>
-    <a href="register.html" class="btn-link">Register</a>
-    <a href="vote.html" class="btn-link">Vote</a>
-</div>
+      <div class="button-container">
+    <div class="button-group">
+        <a href="index.html" class="btn-link">Home</a>
+        <a href="register.html" class="btn-link">Register</a>
+        <a href="vote.html" class="btn-link">Vote</a>
+    </div>
       <div class="button">
                 <button type="button" id="connectWallet">Connect Wallet</button>
             </div>
