@@ -358,13 +358,13 @@ async function connectWallet() {
         console.log("User address:", userAddress);
         console.log("Has voted (from contract):", hasVoted);
 
-        // Explicitly check if hasVoted is true
+        const voteButton = document.querySelector("#voteForm button[type='submit']");
+
+        // If user has voted, disable the button
         if (hasVoted === true) {
-            const voteButton = document.querySelector("#voteForm button[type='submit']");
             voteButton.disabled = true;
             voteButton.textContent = "You have already voted";
         } else {
-            const voteButton = document.querySelector("#voteForm button[type='submit']");
             voteButton.disabled = false;
             voteButton.textContent = "Vote"; // Reset button text
         }
@@ -497,6 +497,7 @@ async function loadCandidates() {
         document.getElementById("voteMessage").textContent = `Error: ${error.message}`;
     }
 });
+
 
 
   </script>
