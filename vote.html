@@ -376,6 +376,8 @@ async function connectWallet() {
         }
 
         console.log("Vote button state updated:", voteButton.disabled); // Log the button state
+      console.log("Final vote button disabled state:", voteButton.disabled);
+
     } catch (error) {
         console.error("Error checking vote status:", error.message);
         document.getElementById("voteMessage").textContent = "Error fetching vote status. Please try again.";
