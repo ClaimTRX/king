@@ -360,15 +360,18 @@ async function connectWallet() {
 
         // Select the vote button
         const voteButton = document.querySelector("#voteForm button[type='submit']");
-        console.log("Vote button element:", voteButton);
 
+        if (!voteButton) {
+            console.error("Vote button not found in the DOM.");
+            return;
+        }
 
         // Update button state explicitly
         if (hasVoted === true) {
-            voteButton.disabled = true; // Disable the button
+            voteButton.setAttribute("disabled", "disabled"); // Explicitly set the disabled attribute
             voteButton.textContent = "You have already voted"; // Update button text
         } else {
-            voteButton.disabled = false; // Enable the button
+            voteButton.removeAttribute("disabled"); // Remove the disabled attribute
             voteButton.textContent = "Vote"; // Reset button text
         }
 
@@ -378,6 +381,7 @@ async function connectWallet() {
         document.getElementById("voteMessage").textContent = "Error fetching vote status. Please try again.";
     }
 }
+
 
 
 
