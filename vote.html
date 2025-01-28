@@ -360,15 +360,16 @@ async function connectWallet() {
         const contract = await tronWeb.contract(contractAbi, contractAddress);
         const hasVoted = await contract.getVoter(userAddress).call(); // Fetch voting status
 
-        console.log("User voting status:", hasVoted); // Log the returned value for debugging
+        console.log("Has voted:", hasVoted); // Debugging log
 
         const voteMessage = document.getElementById("voteMessage");
 
-        if (hasVoted === true) {
-            // Display the message
+        if (hasVoted) {
+            // If the user has already voted, display the message
             voteMessage.textContent = "You have already voted";
+            voteMessage.style.color = "#ffd700"; // Optional styling
         } else {
-            // Reset the message if they haven't voted
+            // If the user hasn't voted, reset the message
             voteMessage.textContent = "";
         }
     } catch (error) {
@@ -376,6 +377,7 @@ async function connectWallet() {
         document.getElementById("voteMessage").textContent = "Error fetching vote status. Please try again.";
     }
 }
+
 
 
 
@@ -506,7 +508,7 @@ async function loadCandidates() {
         document.getElementById("voteMessage").textContent = `Error: ${error.message}`;
     }
 });
-;
+
 
 
 
