@@ -246,6 +246,14 @@
     "stateMutability": "view",
     "type": "function"
 },
+      
+       {
+    "inputs": [{ "internalType": "address", "name": "voter", "type": "address" }],
+    "name": "getVoter",
+    "outputs": [{ "internalType": "bool", "name": "hasVoted", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
 
       {
         "inputs": [{ "internalType": "address", "name": "candidate", "type": "address" }],
@@ -344,10 +352,9 @@ async function connectWallet() {
   async function checkIfUserHasVoted() {
     try {
         const contract = await tronWeb.contract(contractAbi, contractAddress);
-        const voterData = await contract.voters(userAddress).call();
+        const hasVoted = await contract.getVoter(userAddress).call(); // Call the smart contract function
 
-        // Check the hasVoted flag from the smart contract
-        if (voterData.hasVoted) {
+        if (hasVoted) {
             const voteButton = document.querySelector("#voteForm button[type='submit']");
             voteButton.disabled = true; // Disable the button
             voteButton.textContent = "You have already voted"; // Update button text
@@ -356,6 +363,7 @@ async function connectWallet() {
         console.error("Error checking vote status:", error);
     }
 }
+
 
 
 async function loadCandidates() {
