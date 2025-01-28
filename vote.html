@@ -212,7 +212,7 @@
   <script src="https://cdn.jsdelivr.net/npm/tronweb/dist/TronWeb.min.js"></script>
   <script>
     let tronWeb, userAddress;
-    const contractAddress = "TXTUmgKPWGaNGjReS5hBrHC31T7uyrbWQw";
+    const contractAddress = "TVvdZP69TvKpmvYuHm8uATNDYmEeFzEeHH";
     const tokenAddress = "TMFNzkJaj573F62s4bWmfonKwGcosAA8fE";
     const contractAbi = [
       {
@@ -253,7 +253,8 @@
     "outputs": [{ "internalType": "bool", "name": "hasVoted", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
-  },
+}
+
 
       {
         "inputs": [{ "internalType": "address", "name": "candidate", "type": "address" }],
@@ -352,7 +353,7 @@ async function connectWallet() {
   async function checkIfUserHasVoted() {
     try {
         const contract = await tronWeb.contract(contractAbi, contractAddress);
-        const hasVoted = await contract.getVoter(userAddress).call(); // Call the smart contract function
+        const hasVoted = await contract.getVoter(userAddress).call(); // Call the new getter function
 
         if (hasVoted) {
             const voteButton = document.querySelector("#voteForm button[type='submit']");
@@ -360,9 +361,11 @@ async function connectWallet() {
             voteButton.textContent = "You have already voted"; // Update button text
         }
     } catch (error) {
-        console.error("Error checking vote status:", error);
+        console.error("Error checking vote status:", error.message);
+        document.getElementById("voteMessage").textContent = "Error fetching vote status. Please try again.";
     }
 }
+
 
 
 
