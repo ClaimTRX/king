@@ -262,20 +262,17 @@
     document.addEventListener("DOMContentLoaded", async () => {
     const connectButton = document.getElementById("connectWallet");
 
-    // Add click event for Connect Wallet button
     connectButton.addEventListener("click", connectWallet);
 
     if (await checkTronLinkInstalled()) {
         await initializeTronWeb();
         await loadCandidates();
         await loadLeaderboard();
+        await checkIfUserHasVoted(); // Check if user has already voted
 
-        // Hide the Connect Wallet button if already connected
         connectButton.style.display = "none";
-
-        // Start the timer
         updateTimer();
-        setInterval(updateTimer, 1000); // Refresh every second
+        setInterval(updateTimer, 1000);
     } else {
         document.getElementById("voteMessage").textContent =
             "TronLink is not installed. Please install it to continue.";
@@ -331,6 +328,22 @@ async function connectWallet() {
             throw new Error("Approval failed. Please try again.");
         }
     }
+
+  async function checkIfUserHasVoted() {
+    try {
+        const contract = await tronWeb.contract(contractAbi, contractAddress);
+        const hasVoted = await contract.voters(userAddress).call();
+
+        if (hasVoted) {
+            const voteButton = document.querySelector("#voteForm button[type='submit']");
+            voteButton.disabled = true; // Disable the button
+            voteButton.textContent = "You have already voted"; // Update button text
+        }
+    } catch (error) {
+        console.error("Error checking vote status:", error);
+    }
+}
+
 
 async function loadCandidates() {
     try {
