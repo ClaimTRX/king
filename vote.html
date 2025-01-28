@@ -360,6 +360,8 @@ async function connectWallet() {
 
         // Select the vote button
         const voteButton = document.querySelector("#voteForm button[type='submit']");
+        console.log("Vote button element:", voteButton);
+
 
         // Update button state explicitly
         if (hasVoted === true) {
