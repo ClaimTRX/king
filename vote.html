@@ -353,18 +353,22 @@ async function connectWallet() {
   async function checkIfUserHasVoted() {
     try {
         const contract = await tronWeb.contract(contractAbi, contractAddress);
-        const hasVoted = await contract.getVoter(userAddress).call(); // Call the new getter function
+        const hasVoted = await contract.getVoter(userAddress).call();
+
+        console.log("User address:", userAddress);
+        console.log("Has voted (from contract):", hasVoted);
 
         if (hasVoted) {
             const voteButton = document.querySelector("#voteForm button[type='submit']");
-            voteButton.disabled = true; // Disable the button
-            voteButton.textContent = "You have already voted"; // Update button text
+            voteButton.disabled = true;
+            voteButton.textContent = "You have already voted";
         }
     } catch (error) {
         console.error("Error checking vote status:", error.message);
         document.getElementById("voteMessage").textContent = "Error fetching vote status. Please try again.";
     }
 }
+
 
 
 
