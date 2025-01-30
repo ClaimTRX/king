@@ -550,16 +550,17 @@ async function loadCandidates() {
 
         document.getElementById("voteMessage").textContent = "Your vote has been cast successfully!";
 
-        // Step 3: Recheck the voting status
-        await checkIfUserHasVoted();
-
-        // Step 4: Reload the leaderboard to reflect new votes
-        await loadLeaderboard();
+        // Step 3: Update the website 2 seconds after the transaction
+        setTimeout(async () => {
+            await loadLeaderboard(); // Refresh leaderboard
+            await checkIfUserHasVoted(); // Update the static message (if needed)
+        }, 2000);
     } catch (error) {
         console.error("Error casting vote:", error.message);
         document.getElementById("voteMessage").textContent = `Error: ${error.message}`;
     }
 });
+
 
 
 
