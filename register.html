@@ -8,120 +8,131 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #1d1f27, #2b2e3a);
-            color: white;
-        }
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #1d1f27, #2b2e3a);
+        color: white;
+    }
 
-        .container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
-            padding: 20px;
-            box-sizing: border-box;
-        }
+    .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh; /* Ensure content spans the entire height */
+        text-align: center;
+        padding: 20px;
+        box-sizing: border-box;
+    }
 
-        .form-container {
-            width: 100%;
-            max-width: 600px;
-            padding: 20px;
-            background: #1a1c22;
-            border-radius: 10px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 215, 0, 0.8);
-            box-sizing: border-box;
-        }
-    
+    .form-container {
+        width: 100%;
+        max-width: 600px;
+        padding: 30px; /* Increase padding for a polished look */
+        background: linear-gradient(135deg, #252830, #1a1c22);
+        border-radius: 15px; /* More rounded corners */
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6); /* Deeper shadow for a modern look */
+        border: 1px solid rgba(255, 215, 0, 0.9); /* Slightly brighter border */
+        box-sizing: border-box;
+    }
+
     .button-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px; /* Space between rows */
-}
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px; /* Space between rows */
+    }
 
-.button-group {
-    display: flex;
-    justify-content: center;
-    gap: 10px; /* Space between buttons */
-    flex-basis: 100%; /* Each group takes full width */
-}
+    .button-group {
+        display: flex;
+        justify-content: center;
+        gap: 15px; /* Increase space between buttons */
+        flex-basis: 100%; /* Each group takes full width */
+    }
 
-.btn-link {
-    flex: 1; /* Buttons grow equally */
-    max-width: 200px; /* Maximum size for buttons */
-    text-align: center;
-    text-decoration: none;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    background: linear-gradient(135deg, #ffd700, #d4af37);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
+    .btn-link {
+        flex: 1; /* Buttons grow equally */
+        max-width: 200px; /* Maximum size for buttons */
+        text-align: center;
+        text-decoration: none;
+        color: white;
+        padding: 12px 24px; /* Larger padding for a better feel */
+        border-radius: 8px; /* Slightly more rounded buttons */
+        background: linear-gradient(135deg, #ffd700, #d4af37);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
 
-.btn-link:hover {
-    transform: scale(1.05);
-    background: linear-gradient(135deg, #d4af37, #ffd700);
-}
-        h2 {
-            color: rgba(255, 215, 0, 1);
-        }
+    .btn-link:hover {
+        transform: scale(1.05);
+        background: linear-gradient(135deg, #d4af37, #ffd700);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* Slightly more shadow on hover */
+    }
 
-        label {
-            display: block;
-            margin-top: 10px;
-            text-align: left;
-            color: #c5c5c5;
-            font-size: 1rem;
-        }
+    h2 {
+        color: rgba(255, 215, 0, 1);
+        margin-bottom: 20px; /* Add space below heading */
+    }
 
-        input, select {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-size: 1rem;
-            box-sizing: border-box;
-        }
+    label {
+        display: block;
+        margin-top: 10px;
+        text-align: left;
+        color: #c5c5c5;
+        font-size: 1rem;
+    }
 
-        .button {
-            margin-top: 20px;
-        }
+    input, select {
+        width: 100%;
+        padding: 12px; /* Slightly larger padding for better usability */
+        margin: 10px 0;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 1rem;
+        box-sizing: border-box;
+        background: #2b2e36; /* Match background to theme */
+        color: white;
+    }
 
-        .button button {
-            text-decoration: none;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            background: linear-gradient(135deg, #ffd700, #d4af37);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            font-size: 1rem;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+    input::placeholder, select::placeholder {
+        color: #888; /* Lighter placeholder color */
+    }
 
-        .button button:hover {
-            transform: scale(1.05);
-            background: linear-gradient(135deg, #d4af37, #ffd700);
-        }
+    .button {
+        margin-top: 20px;
+    }
 
-        .message {
-            margin-top: 10px;
-            font-size: 0.9rem;
-            color: #c5c5c5;
-        }
+    .button button {
+        text-decoration: none;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #ffd700, #d4af37);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+        font-size: 1rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
 
-     table.leaderboard {
+    .button button:hover {
+        transform: scale(1.05);
+        background: linear-gradient(135deg, #d4af37, #ffd700);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .message {
+        margin-top: 10px;
+        font-size: 1rem; /* Increase font size for better readability */
+        color: #ffd700; /* Brighter color for emphasis */
+        text-align: center;
+    }
+
+    table.leaderboard {
         width: 100%;
         max-width: 600px;
         margin: 20px auto;
@@ -129,14 +140,13 @@
         text-align: left;
         background: #1a1c22;
         color: white;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        border-radius: 15px; /* Match box styling */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
         overflow: hidden;
     }
 
-    table.leaderboard th,
-    table.leaderboard td {
-        padding: 12px;
+    table.leaderboard th, table.leaderboard td {
+        padding: 15px; /* Add more padding */
         border-bottom: 1px solid rgba(255, 215, 0, 0.2);
     }
 
@@ -160,7 +170,59 @@
         margin-top: 20px;
         text-align: center;
     }
-  </style>
+
+    @media screen and (max-width: 768px) {
+        .form-container {
+            width: 90%; /* Expand to 90% width on mobile */
+            padding: 20px; /* Adjust padding for smaller screens */
+        }
+
+        .btn-link {
+            font-size: 0.9rem; /* Slightly smaller font size */
+            padding: 10px 20px; /* Adjust padding */
+        }
+
+        h2 {
+            font-size: 1.4rem; /* Reduce heading size */
+        }
+
+        label, input, select {
+            font-size: 0.9rem; /* Adjust font size */
+        }
+
+        table.leaderboard {
+            font-size: 0.9rem; /* Adjust table font size */
+        }
+    }
+
+    @media screen and (max-width: 480px) {
+        .form-container {
+            padding: 15px; /* Further reduce padding */
+        }
+
+        h2 {
+            font-size: 1.2rem;
+        }
+
+        .btn-link {
+            font-size: 0.8rem;
+            padding: 8px 16px;
+        }
+
+        label, input, select {
+            font-size: 0.8rem;
+        }
+
+        table.leaderboard {
+            font-size: 0.8rem;
+        }
+
+        table.leaderboard th, table.leaderboard td {
+            padding: 10px;
+        }
+    }
+</style>
+
 </head>
 <body>
   
