@@ -27,15 +27,26 @@
     }
 
     .form-container {
-        width: 100%;
-        max-width: 600px;
-        padding: 30px; /* Increase padding for a polished look */
-        background: linear-gradient(135deg, #252830, #1a1c22);
-        border-radius: 15px; /* More rounded corners */
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6); /* Deeper shadow for a modern look */
-        border: 1px solid rgba(255, 215, 0, 0.9); /* Slightly brighter border */
-        box-sizing: border-box;
-    }
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    background: linear-gradient(135deg, #252830, #1a1c22);
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 215, 0, 0.9);
+    box-sizing: border-box;
+    overflow-wrap: break-word; /* Ensures long words wrap */
+    word-wrap: break-word; /* Compatibility for older browsers */
+    word-break: break-word; /* Break long continuous text */
+}
+     .content {
+    text-align: justify;   /* Align text neatly */
+    font-size: 1rem;       /* Standard font size */
+    line-height: 1.5;      /* Add spacing between lines */
+    word-wrap: break-word; /* Wrap long words within the container */
+    padding: 10px;         /* Add padding for spacing */
+    box-sizing: border-box;
+}
 
     .button-container {
         display: flex;
