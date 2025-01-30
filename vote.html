@@ -422,30 +422,25 @@ document.addEventListener("DOMContentLoaded", loadPastWinner);
 
  async function checkIfUserHasVoted() {
     try {
+        const currentRound = await getCurrentRound(); // Fetch the active round ID
         const contract = await tronWeb.contract(contractAbi, contractAddress);
         const hasVoted = await contract.getVoter(userAddress).call(); // Fetch voting status
 
-        console.log(`hasVoted (type: ${typeof hasVoted}):`, hasVoted); // Debugging log
+        console.log(`User Voting Status in Round ${currentRound}:`, hasVoted); // Debugging log
 
         const voteMessage = document.getElementById("voteMessage");
-        const voteButton = document.querySelector("#voteForm button[type='submit']");
 
         if (hasVoted === true || hasVoted === "true") { // Check for both boolean and string representation
             voteMessage.innerHTML = `<span style="color: #ffd700; font-weight: bold;">You have already voted in this round.</span>`;
-            voteButton.disabled = true;
-            voteButton.style.background = "#555";
-            voteButton.style.cursor = "not-allowed";
         } else {
-            voteMessage.innerHTML = `<span style="color: #00ff00;">You can cast your vote!</span>`;
-            voteButton.disabled = false;
-            voteButton.style.background = "linear-gradient(135deg, #ffd700, #d4af37)";
-            voteButton.style.cursor = "pointer";
+            voteMessage.innerHTML = `<span style="color: #00ff00;">You are eligible to vote in this round.</span>`;
         }
     } catch (error) {
         console.error("Error checking vote status:", error.message);
         document.getElementById("voteMessage").textContent = "Error fetching vote status. Please try again.";
     }
 }
+
 
 
 
