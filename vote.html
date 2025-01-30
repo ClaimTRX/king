@@ -421,25 +421,10 @@ document.addEventListener("DOMContentLoaded", loadPastWinner);
     }
 
  async function checkIfUserHasVoted() {
-    try {
-        const currentRound = await getCurrentRound(); // Fetch the active round ID
-        const contract = await tronWeb.contract(contractAbi, contractAddress);
-        const hasVoted = await contract.getVoter(userAddress).call(); // Fetch voting status
-
-        console.log(`User Voting Status in Round ${currentRound}:`, hasVoted); // Debugging log
-
-        const voteMessage = document.getElementById("voteMessage");
-
-        if (hasVoted === true || hasVoted === "true") { // Check for both boolean and string representation
-            voteMessage.innerHTML = `<span style="color: #ffd700; font-weight: bold;">You have already voted in this round.</span>`;
-        } else {
-            voteMessage.innerHTML = `<span style="color: #00ff00;">You are eligible to vote in this round.</span>`;
-        }
-    } catch (error) {
-        console.error("Error checking vote status:", error.message);
-        document.getElementById("voteMessage").textContent = "Error fetching vote status. Please try again.";
-    }
+    // No need to check the voting status dynamically; text remains constant
+    document.getElementById("voteMessage").innerHTML = `<span style="color: #ffd700; font-weight: bold;">You may only vote once per round.</span>`;
 }
+
 
 
 
