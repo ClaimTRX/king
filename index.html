@@ -20,7 +20,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        min-height: 100vh;
+        min-height: 100vh; /* Ensure content spans the entire height */
         text-align: center;
         padding: 20px;
         box-sizing: border-box;
@@ -29,37 +29,36 @@
     .form-container {
         width: 100%;
         max-width: 600px;
-        padding: 30px;
+        padding: 30px; /* Increase padding for a polished look */
         background: linear-gradient(135deg, #252830, #1a1c22);
-        border-radius: 15px;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
-        border: 1px solid rgba(255, 215, 0, 0.9);
+        border-radius: 15px; /* More rounded corners */
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6); /* Deeper shadow for a modern look */
+        border: 1px solid rgba(255, 215, 0, 0.9); /* Slightly brighter border */
         box-sizing: border-box;
-        overflow-wrap: break-word;
     }
 
     .button-container {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 15px;
+        gap: 15px; /* Space between rows */
     }
 
     .button-group {
         display: flex;
         justify-content: center;
-        gap: 15px;
-        flex-wrap: wrap;
+        gap: 15px; /* Increase space between buttons */
+        flex-basis: 100%; /* Each group takes full width */
     }
 
     .btn-link {
-        flex: 1;
-        max-width: 200px;
+        flex: 1; /* Buttons grow equally */
+        max-width: 200px; /* Maximum size for buttons */
         text-align: center;
         text-decoration: none;
         color: white;
-        padding: 12px 24px;
-        border-radius: 8px;
+        padding: 12px 24px; /* Larger padding for a better feel */
+        border-radius: 8px; /* Slightly more rounded buttons */
         background: linear-gradient(135deg, #ffd700, #d4af37);
         box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
         font-size: 1rem;
@@ -71,75 +70,134 @@
     .btn-link:hover {
         transform: scale(1.05);
         background: linear-gradient(135deg, #d4af37, #ffd700);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* Slightly more shadow on hover */
     }
 
     h2 {
         color: rgba(255, 215, 0, 1);
-        margin-bottom: 20px;
-        font-size: 1.8rem;
+        margin-bottom: 20px; /* Add space below heading */
     }
 
-    p {
+    label {
+        display: block;
+        margin-top: 10px;
+        text-align: left;
+        color: #c5c5c5;
         font-size: 1rem;
-        line-height: 1.6;
-        margin-bottom: 20px;
-        text-align: justify;
-        word-wrap: break-word;
-    }
-
-    a {
-        color: #ffd700;
-        text-decoration: underline;
-        word-wrap: break-word;
     }
 
     input, select {
         width: 100%;
-        padding: 12px;
+        padding: 12px; /* Slightly larger padding for better usability */
         margin: 10px 0;
         border-radius: 8px;
         border: 1px solid #ccc;
         font-size: 1rem;
         box-sizing: border-box;
-        background: #2b2e36;
+        background: #2b2e36; /* Match background to theme */
         color: white;
     }
 
     input::placeholder, select::placeholder {
-        color: #888;
+        color: #888; /* Lighter placeholder color */
+    }
+
+    .button {
+        margin-top: 20px;
+    }
+
+    .button button {
+        text-decoration: none;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #ffd700, #d4af37);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+        font-size: 1rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .button button:hover {
+        transform: scale(1.05);
+        background: linear-gradient(135deg, #d4af37, #ffd700);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
     }
 
     .message {
         margin-top: 10px;
+        font-size: 1rem; /* Increase font size for better readability */
+        color: #ffd700; /* Brighter color for emphasis */
+        text-align: center;
+    }
+
+    table.leaderboard {
+        width: 100%;
+        max-width: 600px;
+        margin: 20px auto;
+        border-collapse: collapse;
+        text-align: left;
+        background: #1a1c22;
+        color: white;
+        border-radius: 15px; /* Match box styling */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+    }
+
+    table.leaderboard th, table.leaderboard td {
+        padding: 15px; /* Add more padding */
+        border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    table.leaderboard th {
+        background: rgba(255, 215, 0, 0.8);
+        color: black;
+        text-transform: uppercase;
         font-size: 1rem;
-        color: #ffd700;
+    }
+
+    table.leaderboard tr:nth-child(even) {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    table.leaderboard tr:hover {
+        background: rgba(255, 215, 0, 0.2);
+        transition: background-color 0.3s ease;
+    }
+
+    .leaderboard-container {
+        margin-top: 20px;
         text-align: center;
     }
 
     @media screen and (max-width: 768px) {
         .form-container {
-            width: 90%;
-            padding: 20px;
+            width: 90%; /* Expand to 90% width on mobile */
+            padding: 20px; /* Adjust padding for smaller screens */
         }
 
         .btn-link {
-            font-size: 0.9rem;
-            padding: 10px 20px;
+            font-size: 0.9rem; /* Slightly smaller font size */
+            padding: 10px 20px; /* Adjust padding */
         }
 
         h2 {
-            font-size: 1.4rem;
+            font-size: 1.4rem; /* Reduce heading size */
         }
 
-        p {
-            font-size: 0.9rem;
+        label, input, select {
+            font-size: 0.9rem; /* Adjust font size */
+        }
+
+        table.leaderboard {
+            font-size: 0.9rem; /* Adjust table font size */
         }
     }
 
     @media screen and (max-width: 480px) {
         .form-container {
-            padding: 15px;
+            padding: 15px; /* Further reduce padding */
         }
 
         h2 {
@@ -151,11 +209,20 @@
             padding: 8px 16px;
         }
 
-        p {
+        label, input, select {
             font-size: 0.8rem;
         }
+
+        table.leaderboard {
+            font-size: 0.8rem;
+        }
+
+        table.leaderboard th, table.leaderboard td {
+            padding: 10px;
+        }
     }
-  </style>
+</style>
+
 
 
 
