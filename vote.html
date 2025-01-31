@@ -225,66 +225,67 @@
 
 </head>
 <body>
-  
-
   <div class="container">
     <div class="form-container">
-     <div class="button-container">
-    <div class="button-group">
-        <a href="index.html" class="btn-link">Home</a>
-        <a href="register.html" class="btn-link">Register</a>
-        <a href="vote.html" class="btn-link">Vote</a>
-    </div>
-       <div>
-    <h2>Vote for a King</h2>
+      <!-- Header Buttons -->
+      <div class="button-container">
+        <div class="button-group">
+          <a href="index.html" class="btn-link">Home</a>
+          <a href="register.html" class="btn-link">Register</a>
+          <a href="vote.html" class="btn-link">Vote</a>
+        </div>
+      </div>
+
+      <!-- Voting Section -->
+      <h2>Vote for a King</h2>
       <div class="button">
-    <button type="button" id="connectWallet">Connect Wallet</button>
-  </div>
-    <div id="timer" style="font-size: 1.2rem; color: #ffd700; margin-bottom: 10px;">Time Remaining: Loading...</div>
-    <form id="voteForm">
+        <button type="button" id="connectWallet">Connect Wallet</button>
+      </div>
+      <div id="timer" style="font-size: 1.2rem; color: #ffd700; margin-bottom: 10px;">Time Remaining: Loading...</div>
+      <form id="voteForm">
         <label for="candidate">Select Candidate</label>
         <select id="candidate" name="candidate" required>
-            <!-- Dynamically populated -->
+          <!-- Dynamically populated -->
         </select>
         <div class="button">
-            <button type="submit">Vote</button>
+          <button type="submit">Vote</button>
         </div>
-      <p>The current price for each vote is 2,000 KING</p>
-      <div id="voteMessage" style="margin-top: 10px; font-size: 1rem;"></div>
+        <p>The current price for each vote is 2,000 KING</p>
+        <div id="voteMessage" style="margin-top: 10px; font-size: 1rem;"></div>
+      </form>
 
-    </form>
-    <div id="voteMessage"></div>
-</div>
-       </div>
+      <!-- Leaderboard -->
+      <table class="leaderboard">
+        <thead>
+          <tr>
+            <th>King Name</th>
+            <th>Total Votes</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboard">
+          <!-- Dynamically populated -->
+        </tbody>
+      </table>
 
-
-    <table class="leaderboard">
-      <thead>
-        <tr>
-          <th>King Name</th>
-          <th>Total Votes</th>
-        </tr>
-      </thead>
-      <tbody id="leaderboard">
-        <!-- Dynamically populated -->
-      </tbody>
-    </table>
-  </div>
-    
-       <div class="button-container">
-        <div class="button-group">
-            <a href="https://www.dextools.io/app/en/tron/pair-explorer/TQ2HCSvpir3ELSJg3J2wKG6TskePh74rz8" class="btn-link">Chart</a>
-            <a href="https://sunswap.com/#/home/TMFNzkJaj573F62s4bWmfonKwGcosAA8fE" class="btn-link">Buy</a>
-            <a href="https://claimfreetrx.io/king" class="btn-link">Stake</a>
-        </div>
-        <div class="button-group">
-            <a href="https://t.me/TheKingdomOfTheWorld" class="btn-link">Telegram</a>
-            <a href="https://thekingdomtrx.news" class="btn-link">Coming Soon</a>
-            <a href="https://x.com/TheKingdomTRX" class="btn-link">X</a>
-        </div>
+      <!-- Past Winner Section -->
+      <div id="pastWinner" style="margin-top: 20px; color: gold;"></div>
     </div>
-</div>
-    
+
+    <!-- Footer Buttons (inside the container) -->
+    <div class="button-container">
+      <div class="button-group">
+        <a href="https://www.dextools.io/app/en/tron/pair-explorer/TQ2HCSvpir3ELSJg3J2wKG6TskePh74rz8" class="btn-link">Chart</a>
+        <a href="https://sunswap.com/#/home/TMFNzkJaj573F62s4bWmfonKwGcosAA8fE" class="btn-link">Buy</a>
+        <a href="https://claimfreetrx.io/king" class="btn-link">Stake</a>
+      </div>
+      <div class="button-group">
+        <a href="https://t.me/TheKingdomOfTheWorld" class="btn-link">Telegram</a>
+        <a href="https://thekingdomtrx.news" class="btn-link">Coming Soon</a>
+        <a href="https://x.com/TheKingdomTRX" class="btn-link">X</a>
+      </div>
+    </div>
+  </div>
+
 
 
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
