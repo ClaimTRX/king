@@ -385,6 +385,7 @@
         connectButton.style.display = "none";
         updateTimer();
         setInterval(updateTimer, 1000);
+      setInterval(loadLeaderboard, 5000);
     } else {
         document.getElementById("voteMessage").textContent =
             "TronLink is not installed. Please install it to continue.";
