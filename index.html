@@ -289,5 +289,20 @@
     </div>
 
     </div>
+
+      <script>
+    document.getElementById('contractAddress').addEventListener('click', function () {
+        const contractAddress = this.textContent; // Get the address
+        navigator.clipboard.writeText(contractAddress).then(() => {
+            const copyMessage = document.getElementById('copyMessage');
+            copyMessage.textContent = 'Copied to clipboard!';
+            setTimeout(() => {
+                copyMessage.textContent = ''; // Clear the message after 2 seconds
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy:', err);
+        });
+    });
+</script>
 </body>
 </html>
